@@ -266,7 +266,7 @@
 
 </div>
 
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script> <!-- Atualizado para a versão de produção -->
 <script>
   const API_URL = 'https://script.google.com/macros/s/AKfycbzFRcaIk838QmPAAKdb3oHTc0hJdj48j02Mi_AWETDsKe-hPydWha_SrMjo17Pfwewr/exec';
 
@@ -299,17 +299,21 @@
       totalPaginas() { return Math.ceil(this.filtrados.length / this.itensPag); }
     },
     methods: {
+      // 1. CORREÇÃO DO GET: Chamada direta sem intermediários
       carregar() {
         this.loading = true;
-        // Usando o Proxy AllOrigins para contornar o CORS de forma definitiva
-        fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(API_URL + '?t=' + new Date().getTime())}`)
-          .then(res => res.json())
+        
+        fetch(`${API_URL}?t=${new Date().getTime()}`)
+          .then(res => {
+            if (!res.ok) throw new Error('Falha na resposta do servidor.');
+            return res.json();
+          })
           .then(data => {
-            this.negocios = JSON.parse(data.contents);
+            this.negocios = data; // O script já retorna a array de aprovados diretamente
             this.loading = false;
           })
           .catch(err => {
-            console.error("Erro na API:", err);
+            console.error("Erro na API (GET):", err);
             this.loading = false;
           });
       },
@@ -321,17 +325,26 @@
         reader.onload = (ev) => { this.form.fileData = ev.target.result; };
         reader.readAsDataURL(file);
       },
+      // 2. CORREÇÃO DO POST: Evita o erro de CORS do pré-envio 'OPTIONS' do navegador
       async enviar() {
         this.submitting = true;
         try {
-          await fetch(API_URL, { 
+          const response = await fetch(API_URL, { 
             method: 'POST', 
-            mode: 'no-cors', 
-            headers: { 'Content-Type': 'application/json' }, 
+            // text/plain impede o preflight OPTIONS, mas o Apps Script lê o JSON normalmente
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
             body: JSON.stringify(this.form) 
           });
-          this.formEnviado = true;
+          
+          const resultado = await response.json();
+          
+          if (resultado.status === "Sucesso") {
+            this.formEnviado = true;
+          } else {
+            alert("O servidor encontrou um problema ao salvar os dados.");
+          }
         } catch (e) {
+          console.error("Erro na API (POST):", e);
           alert("Erro no envio. Tente novamente.");
         } finally {
           this.submitting = false;
