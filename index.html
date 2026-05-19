@@ -8,132 +8,96 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     body { background-color: #f4f6f9; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; overflow-x: hidden; }
-    [v-cloak] { display: none; }
-
-    /* NAVBAR */
     .navbar-brand { font-size: 0.95rem; line-height: 1.2; white-space: normal; max-width: 180px; cursor: pointer; }
     .btn-cadastrar { background: #ffc107; color: #1a2a3a; font-weight: bold; border: none; border-radius: 20px; padding: 5px 15px; font-size: 0.85rem; transition: 0.3s; }
     .btn-cadastrar:hover { background: #e0a800; transform: scale(1.05); }
-
-    /* FILTROS */
     .filter-section { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; }
     .label-v { color: #888; font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; display: block; }
-
-    /* GRID */
     .card-negocio { border: none; border-radius: 12px; cursor: pointer; transition: 0.3s; background: white; height: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden; }
     .card-negocio:hover { transform: translateY(-4px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
     .img-box { width: 100%; aspect-ratio: 1 / 1; position: relative; overflow: hidden; background: #eee; }
     .img-box img { width: 100%; height: 100%; object-fit: cover; }
     .badge-cat { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.75); color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.6rem; font-weight: bold; z-index: 2; }
-    
-    /* DETALHES */
     .detail-bg { background: #1a2a3a; padding: 40px 0; text-align: center; color: white; }
     .img-detail-wrapper { width: 160px; height: 160px; margin: 0 auto -80px auto; position: relative; z-index: 5; }
     .img-detail-wrapper img { width: 100%; height: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 20px; border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); background: white; }
     .detail-content { margin-top: 0; padding-top: 90px; background: white; border-radius: 30px 30px 0 0; min-height: 100vh; }
-    
-    /* BOTÕES AÇÃO */
     .btn-acao { border-radius: 15px; padding: 15px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; text-decoration: none !important; color: white; transition: 0.2s; font-size: 0.9rem; }
     .btn-acao:not(.disabled):active { transform: scale(0.96); }
     .btn-acao.disabled { background: #e0e0e0 !important; color: #aaa !important; cursor: not-allowed; pointer-events: none; box-shadow: none; }
-
-    /* CADASTRO */
     .form-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 600px; margin: auto; }
     .progress { height: 6px; border-radius: 10px; margin-bottom: 20px; }
+    .d-none { display: none !important; }
   </style>
 </head>
 <body>
 
-<div id="app" v-cloak>
-  
+<div id="app">
   <!-- NAVBAR -->
   <nav class="navbar navbar-dark bg-dark sticky-top shadow">
     <div class="container d-flex justify-content-between align-items-center px-3">
-      <span class="navbar-brand fw-bold" @click="voltar" style="cursor:pointer">
+      <span class="navbar-brand fw-bold" onclick="roteamento('grid')">
         Catálogo de Negócios <br><small class="opacity-75">Maçonaria Sergipe</small>
       </span>
-      <button v-if="view === 'grid'" class="btn-cadastrar shadow-sm" @click="view = 'cadastro'">
+      <button id="btnCadastrarNav" class="btn-cadastrar shadow-sm" onclick="roteamento('cadastro')">
         <i class="fa fa-plus-circle me-1"></i> Cadastrar
       </button>
     </div>
   </nav>
 
   <!-- TELA 1: GRID / CATALOGO -->
-  <div v-if="view === 'grid'" class="container py-4">
-    
-    <!-- Filtros -->
+  <div id="tela-grid" class="container py-4">
     <div class="filter-section text-start mx-2">
         <div class="row g-2">
           <div class="col-12 col-md-7">
             <label class="label-v">Buscar</label>
-            <input type="text" class="form-control form-control-sm shadow-sm" placeholder="Nome, área ou irmão..." v-model="busca" @input="pagina = 1">
+            <input type="text" id="inputBusca" class="form-control form-control-sm shadow-sm" placeholder="Nome, área ou irmão...">
           </div>
           <div class="col-12 col-md-5">
             <label class="label-v">Área de Atuação</label>
-            <select class="form-select form-select-sm shadow-sm" v-model="categoriaSelecionada" @change="pagina = 1">
+            <select id="selectCategoria" class="form-select form-select-sm shadow-sm">
               <option value="">Todas as áreas</option>
-              <option v-for="cat in listaCategorias" :key="cat" :value="cat">{{ cat }}</option>
             </select>
           </div>
         </div>
     </div>
 
     <!-- Loader -->
-    <div v-if="loading" class="text-center py-5">
+    <div id="loader" class="text-center py-5">
       <div class="spinner-border text-primary" role="status"></div>
       <p class="mt-3 text-muted small fw-bold">Sincronizando com a Planilha...</p>
     </div>
 
     <!-- Sem Resultados -->
-    <div v-else-if="filtrados.length === 0" class="text-center py-5">
+    <div id="sem-resultados" class="text-center py-5 d-none">
       <i class="fa fa-search-minus fa-3x text-muted mb-3"></i>
       <p class="text-muted">Nenhum resultado encontrado.</p>
-      <button class="btn btn-outline-dark btn-sm rounded-pill px-4" @click="busca = ''; categoriaSelecionada = ''">Limpar Filtros</button>
+      <button class="btn btn-outline-dark btn-sm rounded-pill px-4" onclick="limparFiltros()">Limpar Filtros</button>
     </div>
 
     <!-- Grid de Cards -->
-    <div v-else class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 text-start mx-1">
-      <div v-for="n in paginados" :key="n.id" class="col">
-        <div class="card card-negocio shadow-sm" @click="verDetalhes(n)">
-          <div class="img-box">
-            <span class="badge-cat" v-if="n.categorias">{{ n.categorias.split(',')[0] }}</span>
-            <img :src="n.urlfotologo || n.urlfoto || 'https://via.placeholder.com/400x400?text=Maçonaria+SE'">
-          </div>
-          <div class="card-body p-3">
-            <h6 class="fw-bold text-uppercase mb-1" style="color: #1a2a3a; font-size: 0.85rem; min-height: 2.2em;">{{ n.nomefantasia }}</h6>
-            <p class="mb-1 small text-secondary text-truncate"><strong>{{ n.nomeirmao }}</strong></p>
-            <p class="text-muted small mb-0"><i class="fa fa-map-marker-alt me-1"></i> {{ n.locaisatendimento }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div id="grid-negocios" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 text-start mx-1"></div>
 
     <!-- Paginação -->
-    <nav v-if="totalPaginas > 1" class="mt-5">
-      <ul class="pagination pagination-sm justify-content-center">
-        <li v-for="p in totalPaginas" :class="['page-item', {active: pagina === p}]">
-          <a class="page-link shadow-sm" href="#" @click.prevent="pagina = p">{{ p }}</a>
-        </li>
-      </ul>
-    </nav>
+    <nav id="paginacao-container" class="mt-5"></nav>
   </div>
 
   <!-- TELA 2: DETALHES -->
-  <div v-if="view === 'detalhes' && selec">
+  <div id="tela-detalhes" class="d-none">
     <div class="detail-bg px-3">
         <div class="container">
-            <h2 class="fw-bold text-uppercase mb-1">{{ selec.nomefantasia }}</h2>
-            <p class="fst-italic opacity-75 small mb-0">{{ selec.slogan }}</p>
+            <h2 id="detalhe-nome" class="fw-bold text-uppercase mb-1"></h2>
+            <p id="detalhe-slogan" class="fst-italic opacity-75 small mb-0"></p>
         </div>
     </div>
     <div class="img-detail-wrapper">
-        <img :src="selec.urlfotologo || selec.urlfoto || 'https://via.placeholder.com/400x400?text=Logo'">
+        <img id="detalhe-img" src="">
     </div>
     <div class="container detail-content text-start">
       <div class="row justify-content-center">
         <div class="col-lg-8">
           <div class="text-center mb-4">
-            <button class="btn btn-light btn-sm rounded-pill px-4 border shadow-sm" @click="view = 'grid'">
+            <button class="btn btn-light btn-sm rounded-pill px-4 border shadow-sm" onclick="roteamento('grid')">
                 <i class="fa fa-arrow-left me-1"></i> Voltar
             </button>
           </div>
@@ -141,46 +105,45 @@
           <div class="row mb-4 bg-light p-3 rounded-4 mx-1 shadow-sm border">
             <div class="col-6 border-end text-start">
               <label class="label-v">Responsável</label>
-              <span class="fw-bold d-block small" v-if="selec.vinculo && selec.vinculo.toLowerCase() === 'proprio'">{{ selec.nomeirmao }}</span>
-              <span class="fw-bold d-block small" v-else>{{ selec.nomeproprietaria || selec.nomecompanheira || 'Proprietária' }}</span>
-              <div class="small text-muted" style="font-size: 0.7rem;">{{ selec.vinculo && selec.vinculo.toLowerCase() === 'proprio' ? selec.grau : 'Proprietária' }}</div>
+              <span id="detalhe-responsavel" class="fw-bold d-block small"></span>
+              <div id="detalhe-responsavel-sub" class="small text-muted" style="font-size: 0.7rem;"></div>
             </div>
             <div class="col-6 ps-3 text-start">
               <label class="label-v">Indicação / Ir.</label>
-              <span class="fw-bold d-block small">Ir. {{ selec.nomeirmao }}</span>
-              <div class="small text-muted" style="font-size: 0.7rem;">{{ selec.grau }}</div>
+              <span id="detalhe-irmao" class="fw-bold d-block small"></span>
+              <div id="detalhe-grau" class="small text-muted" style="font-size: 0.7rem;"></div>
             </div>
           </div>
 
           <div class="px-3">
             <label class="label-v">Sobre o Negócio</label>
-            <p class="text-secondary small" style="white-space: pre-line; line-height: 1.6;">{{ selec.descricao }}</p>
+            <p id="detalhe-descricao" class="text-secondary small" style="white-space: pre-line; line-height: 1.6;"></p>
 
             <div class="row mb-4">
                 <div class="col-6">
                     <label class="label-v">Modalidade</label>
-                    <p class="small mb-0 fw-bold"><i class="fa fa-check-circle me-1 text-success"></i> {{ selec.modalidade }}</p>
+                    <p id="detalhe-modalidade" class="small mb-0 fw-bold"><i class="fa fa-check-circle me-1 text-success"></i></p>
                 </div>
                 <div class="col-6">
                     <label class="label-v">Onde Atende</label>
-                    <p class="small mb-0 fw-bold"><i class="fa fa-map-marker-alt me-1 text-danger"></i> {{ selec.locaisatendimento }}</p>
+                    <p id="detalhe-locais" class="small mb-0 fw-bold"><i class="fa fa-map-marker-alt me-1 text-danger"></i></p>
                 </div>
             </div>
 
-            <div v-if="selec.diferencial" class="alert alert-success border-0 shadow-sm mb-4 py-2">
+            <div id="detalhe-diferencial-box" class="alert alert-success border-0 shadow-sm mb-4 py-2 d-none">
                 <i class="fa fa-star me-2"></i> <strong class="small">Diferencial para Irmãos:</strong> <br>
-                <span class="small">{{ selec.diferencial }}</span>
+                <span id="detalhe-diferencial" class="small"></span>
             </div>
 
             <div class="mt-5 pb-5">
-              <a :href="getWpp(selec.whatsapp)" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !selec.whatsapp }" style="background:#25d366;">
-                <i class="fab fa-whatsapp me-2 fa-lg"></i> {{ selec.whatsapp ? 'FALAR NO WHATSAPP' : 'WHATSAPP INDISPONÍVEL' }}
+              <a id="btn-wpp" target="_blank" class="btn-acao shadow-sm" style="background:#25d366;">
+                <i class="fab fa-whatsapp me-2 fa-lg"></i> <span></span>
               </a>
-              <a :href="getInsta(selec.instagram)" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !selec.instagram }" style="background:linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);">
-                <i class="fab fa-instagram me-2 fa-lg"></i> {{ selec.instagram ? 'VER INSTAGRAM' : 'INSTAGRAM INDISPONÍVEL' }}
+              <a id="btn-insta" target="_blank" class="btn-acao shadow-sm" style="background:linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);">
+                <i class="fab fa-instagram me-2 fa-lg"></i> <span></span>
               </a>
-              <a :href="selec.site" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !selec.site }" style="background:#333;">
-                <i class="fa fa-globe me-2 fa-lg"></i> {{ selec.site ? 'VISITAR SITE' : 'SITE INDISPONÍVEL' }}
+              <a id="btn-site" target="_blank" class="btn-acao shadow-sm" style="background:#333;">
+                <i class="fa fa-globe me-2 fa-lg"></i> <span></span>
               </a>
             </div>
           </div>
@@ -190,171 +153,398 @@
   </div>
 
   <!-- TELA 3: CADASTRO -->
-  <div v-if="view === 'cadastro'" class="container py-4">
+  <div id="tela-cadastro" class="container py-4 d-none">
     <div class="form-box text-start mx-2">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h5 class="fw-bold mb-0">Novo Cadastro</h5>
-            <button class="btn-close" @click="voltar"></button>
+            <button class="btn-close" onclick="roteamento('grid')"></button>
         </div>
 
-        <div v-if="!formEnviado">
-            <div class="progress"><div class="progress-bar bg-warning" :style="{width: (step * 33.3) + '%'}"></div></div>
+        <div id="formulario-fluxo">
+            <div class="progress"><div id="barra-progresso" class="progress-bar bg-warning" style="width: 33.3%;"></div></div>
 
             <!-- PASSO 1 -->
-            <div v-if="step === 1">
+            <div id="passo-1">
                 <label class="label-v">Nome do Irmão</label>
-                <input type="text" v-model="form.nomeIrmao" class="form-control mb-3" placeholder="Nome completo">
+                <input type="text" id="form-nomeIrmao" class="form-control mb-3" placeholder="Nome completo">
                 <label class="label-v">Grau</label>
-                <select v-model="form.grau" class="form-select mb-3">
+                <select id="form-grau" class="form-select mb-3">
                     <option value="Aprendiz">Aprendiz</option>
                     <option value="Companheiro">Companheiro</option>
                     <option value="Mestre">Mestre</option>
                 </select>
                 <label class="label-v">Vínculo</label>
-                <select v-model="form.vinculo" class="form-select mb-3">
+                <select id="form-vinculo" class="form-select mb-3" onchange="toggleProprietaria()">
                     <option value="Proprio">Negócio próprio</option>
                     <option value="Companheira">Da esposa/companheira</option>
                     <option value="Outro">De outro familiar</option>
                 </select>
-                <div v-if="form.vinculo !== 'Proprio'">
+                <div id="box-proprietaria" class="d-none">
                     <label class="label-v">Nome da Proprietária</label>
-                    <input type="text" v-model="form.nomeProprietaria" class="form-control mb-3">
+                    <input type="text" id="form-nomeProprietaria" class="form-control mb-3">
                 </div>
-                <button class="btn btn-dark w-100 mt-3 rounded-pill" @click="step = 2" :disabled="!form.nomeIrmao">Próximo</button>
+                <button class="btn btn-dark w-100 mt-3 rounded-pill" onclick="mudarPasso(2)">Próximo</button>
             </div>
 
             <!-- PASSO 2 -->
-            <div v-if="step === 2">
+            <div id="passo-2" class="d-none">
                 <label class="label-v">Nome Fantasia do Negócio</label>
-                <input type="text" v-model="form.nomeFantasia" class="form-control mb-3">
+                <input type="text" id="form-nomeFantasia" class="form-control mb-3">
                 <label class="label-v">Categorias</label>
-                <input type="text" v-model="form.categorias" class="form-control mb-3" placeholder="Ex: Fotografia, Advocacia">
+                <input type="text" id="form-categorias" class="form-control mb-3" placeholder="Ex: Fotografia, Advocacia">
                 <label class="label-v">WhatsApp</label>
-                <input type="tel" v-model="form.whatsapp" class="form-control mb-3" placeholder="(00) 00000-0000">
+                <input type="tel" id="form-whatsapp" class="form-control mb-3" placeholder="(00) 00000-0000">
                 <label class="label-v">Logo/Foto (Quadrada)</label>
-                <input type="file" @change="handleFile" class="form-control mb-4" accept="image/*">
+                <input type="file" id="form-file" class="form-control mb-4" accept="image/*" onchange="converterImagem(event)">
                 <div class="d-flex gap-2">
-                    <button class="btn btn-light border w-100 rounded-pill" @click="step = 1">Voltar</button>
-                    <button class="btn btn-dark w-100 rounded-pill" @click="step = 3" :disabled="!form.nomeFantasia">Próximo</button>
+                    <button class="btn btn-light border w-100 rounded-pill" onclick="mudarPasso(1)">Voltar</button>
+                    <button class="btn btn-dark w-100 rounded-pill" onclick="mudarPasso(3)">Próximo</button>
                 </div>
             </div>
 
             <!-- PASSO 3 -->
-            <div v-if="step === 3">
+            <div id="passo-3" class="d-none">
                 <label class="label-v">Descrição Curta</label>
-                <textarea v-model="form.descricao" class="form-control mb-3" rows="3"></textarea>
+                <textarea id="form-descricao" class="form-control mb-3" rows="3"></textarea>
                 <label class="label-v">Abrangência de Atendimento</label>
-                <input type="text" v-model="form.locaisAtendimento" class="form-control mb-3" placeholder="Cidades ou Estados">
+                <input type="text" id="form-locaisAtendimento" class="form-control mb-3" placeholder="Cidades ou Estados">
                 <div class="alert alert-light border small text-muted">Ao enviar, seu cadastro passará por moderação. TFA!</div>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-light border w-100 rounded-pill" @click="step = 2">Voltar</button>
-                    <button class="btn btn-success w-100 rounded-pill" @click="enviar" :disabled="submitting">
-                        {{ submitting ? 'Enviando...' : 'Finalizar Cadastro' }}
-                    </button>
+                    <button class="btn btn-light border w-100 rounded-pill" onclick="mudarPasso(2)">Voltar</button>
+                    <button id="btnFinalizar" class="btn btn-success w-100 rounded-pill" onclick="enviarFormulario()">Finalizar Cadastro</button>
                 </div>
             </div>
         </div>
 
-        <div v-else class="text-center py-5">
+        <div id="formulario-sucesso" class="text-center py-5 d-none">
             <i class="fa fa-check-circle fa-4x text-success mb-3"></i>
             <h5 class="fw-bold">Cadastro Enviado!</h5>
             <p class="text-muted small">Obrigado! Seus dados foram recebidos. TFA!</p>
-            <button class="btn btn-dark mt-3 px-5 rounded-pill" @click="voltar">Ir para o Catálogo</button>
+            <button class="btn btn-dark mt-3 px-5 rounded-pill" onclick="roteamento('grid')">Ir para o Catálogo</button>
         </div>
     </div>
   </div>
-
 </div>
 
-<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script> <!-- Atualizado para a versão de produção -->
 <script>
+  // URL ÚNICA DIRETA DA API DO GOOGLE MACROS
   const API_URL = 'https://script.google.com/macros/s/AKfycbzFRcaIk838QmPAAKdb3oHTc0hJdj48j02Mi_AWETDsKe-hPydWha_SrMjo17Pfwewr/exec';
 
-  const { createApp } = Vue;
-  createApp({
-    data() {
-      return {
-        view: 'grid', loading: true, negocios: [], selec: null,
-        busca: '', categoriaSelecionada: '', pagina: 1, itensPag: 12,
-        step: 1, formEnviado: false, submitting: false,
-        form: { nomeIrmao: '', grau: 'Aprendiz', vinculo: 'Proprio', nomeProprietaria: '', nomeFantasia: '', categorias: '', whatsapp: '', fileData: '', descricao: '', locaisAtendimento: '', modalidade: 'Presencial', email: 'contato@catalogo.com' }
+  // ESTADO GLOBAL DA APLICAÇÃO
+  let estado = {
+    view: 'grid',
+    loading: true,
+    negocios: [],
+    busca: '',
+    categoriaSelecionada: '',
+    pagina: 1,
+    itensPag: 12,
+    step: 1,
+    form: { nomeIrmao: '', grau: 'Aprendiz', vinculo: 'Proprio', nomeProprietaria: '', nomeFantasia: '', categorias: '', whatsapp: '', fileData: '', descricao: '', locaisAtendimento: '', modalidade: 'Presencial', email: 'contato@catalogo.com' }
+  };
+
+  // REQUISIÇÃO NATIVA VIA FETCH SEM PROXY EXTERNO
+  function carregarDados() {
+    estado.loading = true;
+    document.getElementById('loader').classList.remove('d-none');
+    document.getElementById('grid-negocios').innerHTML = '';
+    
+    // t=timestamp garante que o navegador ignore qualquer cache local antigo
+    fetch(`${API_URL}?t=${Date.now()}`)
+      .then(res => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then(dados => {
+        estado.negocios = dados;
+        estado.loading = false;
+        document.getElementById('loader').classList.add('d-none');
+        construirFiltroCategorias();
+        renderizarGrid();
+      })
+      .catch(err => {
+        console.error("Erro na API de busca:", err);
+        estado.loading = false;
+        document.getElementById('loader').innerHTML = '<p class="text-danger small fw-bold">Erro ao carregar dados. Recarregue a página.</p>';
+      });
+  }
+
+  // MONTA O SELECT DINAMICAMENTE
+  function construirFiltroCategorias() {
+    const cats = new Set();
+    estado.negocios.forEach(n => {
+      if(n.categorias) n.categorias.split(',').forEach(c => cats.add(c.trim()));
+    });
+    const select = document.getElementById('selectCategoria');
+    select.innerHTML = '<option value="">Todas as áreas</option>';
+    Array.from(cats).sort().forEach(cat => {
+      const opt = document.createElement('option');
+      opt.value = cat;
+      opt.textContent = cat;
+      select.appendChild(opt);
+    });
+  }
+
+  // FILTRA E RENDERIZA OS CARDS EM TELA
+  function renderizarGrid() {
+    let filtrados = estado.negocios;
+
+    if (estado.categoriaSelecionada) {
+      filtrados = filtrados.filter(n => n.categorias && n.categorias.includes(estado.categoriaSelecionada));
+    }
+    if (estado.busca) {
+      const b = estado.busca.toLowerCase();
+      filtrados = filtrados.filter(n => n.nomefantasia.toLowerCase().includes(b) || n.nomeirmao.toLowerCase().includes(b) || (n.categorias && n.categorias.toLowerCase().includes(b)));
+    }
+
+    const semResultados = document.getElementById('sem-resultados');
+    if (filtrados.length === 0) {
+      semResultados.classList.remove('d-none');
+      document.getElementById('grid-negocios').innerHTML = '';
+      document.getElementById('paginacao-container').innerHTML = '';
+      return;
+    }
+    semResultados.classList.add('d-none');
+
+    // Lógica de Paginação
+    const totalPaginas = Math.ceil(filtrados.length / estado.itensPag);
+    const inicio = (estado.pagina - 1) * estado.itensPag;
+    const paginados = filtrados.slice(inicio, inicio + estado.itensPag);
+
+    const grid = document.getElementById('grid-negocios');
+    grid.innerHTML = '';
+
+    paginados.forEach(n => {
+      const principalCat = n.categorias ? n.categorias.split(',')[0] : '';
+      const foto = n.urlfotologo || n.urlfoto || 'https://via.placeholder.com/400x400?text=Maçonaria+SE';
+      
+      const col = document.createElement('div');
+      col.className = 'col';
+      col.innerHTML = `
+        <div class="card card-negocio shadow-sm">
+          <div class="img-box">
+            ${principalCat ? `<span class="badge-cat">${principalCat}</span>` : ''}
+            <img src="${foto}">
+          </div>
+          <div class="card-body p-3">
+            <h6 class="fw-bold text-uppercase mb-1" style="color: #1a2a3a; font-size: 0.85rem; min-height: 2.2em;">${n.nomefantasia}</h6>
+            <p class="mb-1 small text-secondary text-truncate"><strong>${n.nomeirmao}</strong></p>
+            <p class="text-muted small mb-0"><i class="fa fa-map-marker-alt me-1"></i> ${n.locaisatendimento}</p>
+          </div>
+        </div>
+      `;
+      col.querySelector('.card-negocio').addEventListener('click', () => abrirDetalhes(n));
+      grid.appendChild(col);
+    });
+
+    renderizarPaginacao(totalPaginas);
+  }
+
+  function renderizarPaginacao(total) {
+    const container = document.getElementById('paginacao-container');
+    container.innerHTML = '';
+    if (total <= 1) return;
+
+    const ul = document.createElement('ul');
+    ul.className = 'pagination pagination-sm justify-content-center';
+
+    for(let i = 1; i <= total; i++) {
+      const li = document.createElement('li');
+      li.className = `page-item ${estado.pagina === i ? 'active' : ''}`;
+      li.innerHTML = `<a class="page-link shadow-sm" href="#">${i}</a>`;
+      li.querySelector('a').addEventListener('click', (e) => {
+        e.preventDefault();
+        estado.pagina = i;
+        renderizarGrid();
+      });
+      ul.appendChild(li);
+    }
+    container.appendChild(ul);
+  }
+
+  // TELA DETALHES DO ITEM
+  function abrirDetalhes(n) {
+    document.getElementById('detalhe-nome').textContent = n.nomefantasia;
+    document.getElementById('detalhe-slogan').textContent = n.slogan || '';
+    document.getElementById('detalhe-img').src = n.urlfotologo || n.urlfoto || 'https://via.placeholder.com/400x400?text=Logo';
+    
+    if (n.vinculo && n.vinculo.toLowerCase() === 'proprio') {
+      document.getElementById('detalhe-responsavel').textContent = n.nomeirmao;
+      document.getElementById('detalhe-responsavel-sub').textContent = n.grau;
+    } else {
+      document.getElementById('detalhe-responsavel').textContent = n.nomeproprietaria || n.nomecompanheira || 'Proprietária';
+      document.getElementById('detalhe-responsavel-sub').textContent = 'Proprietária';
+    }
+
+    document.getElementById('detalhe-irmao').textContent = `Ir. ${n.nomeirmao}`;
+    document.getElementById('detalhe-grau').textContent = n.grau;
+    document.getElementById('detalhe-descricao').textContent = n.descricao;
+    
+    document.getElementById('detalhe-modalidade').innerHTML = `<i class="fa fa-check-circle me-1 text-success"></i> ${n.modalidade || 'Presencial'}`;
+    document.getElementById('detalhe-locais').innerHTML = `<i class="fa fa-map-marker-alt me-1 text-danger"></i> ${n.locaisatendimento}`;
+
+    const divDif = document.getElementById('detalhe-diferencial-box');
+    if (n.diferencial) {
+      divDif.classList.remove('d-none');
+      document.getElementById('detalhe-diferencial').textContent = n.diferencial;
+    } else {
+      divDif.classList.add('d-none');
+    }
+
+    // Configuração dos Botões de Link Direto
+    setupBotaoAcao('btn-wpp', n.whatsapp, formatarWpp(n.whatsapp), 'FAB', 'fa-whatsapp', 'FALAR NO WHATSAPP', 'WHATSAPP INDISPONÍVEL');
+    setupBotaoAcao('btn-insta', n.instagram, formatarInsta(n.instagram), 'FAB', 'fa-instagram', 'VER INSTAGRAM', 'INSTAGRAM INDISPONÍVEL');
+    setupBotaoAcao('btn-site', n.site, n.site, 'FA', 'fa-globe', 'VISITAR SITE', 'SITE INDISPONÍVEL');
+
+    roteamento('detalhes');
+  }
+
+  function setupBotaoAcao(id, valor, link, tipoIcone, icone, textoAtivo, textoInativo) {
+    const btn = document.getElementById(id);
+    const span = btn.querySelector('span');
+    if (valor) {
+      btn.classList.remove('disabled');
+      btn.href = link;
+      span.textContent = textoAtivo;
+    } else {
+      btn.classList.add('disabled');
+      btn.href = '#';
+      span.textContent = textoInativo;
+    }
+  }
+
+  // ENVIAR FORMULÁRIO NATIVO USANDO TEXT/PLAIN CONTRA CORS OPTIONS
+  function enviarFormulario() {
+    const btn = document.getElementById('btnFinalizar');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    // Captura os dados atualizados das inputs textuais
+    estado.form.nomeIrmao = document.getElementById('form-nomeIrmao').value;
+    estado.form.grau = document.getElementById('form-grau').value;
+    estado.form.vinculo = document.getElementById('form-vinculo').value;
+    estado.form.nomeProprietaria = document.getElementById('form-nomeProprietaria').value;
+    estado.form.nomeFantasia = document.getElementById('form-nomeFantasia').value;
+    estado.form.categorias = document.getElementById('form-categorias').value;
+    estado.form.whatsapp = document.getElementById('form-whatsapp').value;
+    estado.form.descricao = document.getElementById('form-descricao').value;
+    estado.form.locaisAtendimento = document.getElementById('form-locaisAtendimento').value;
+
+    fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Truque primordial anti-CORS
+      body: JSON.stringify(estado.form)
+    })
+    .then(res => res.json())
+    .then(resultado => {
+      if (resultado.status === "Sucesso") {
+        document.getElementById('formulario-fluxo').classList.add('d-none');
+        document.getElementById('formulario-sucesso').classList.remove('d-none');
+      } else {
+        alert("Erro no servidor ao tentar salvar.");
+        btn.disabled = false;
+        btn.textContent = 'Finalizar Cadastro';
       }
-    },
-    computed: {
-      listaCategorias() {
-        const cats = new Set();
-        this.negocios.forEach(n => { if(n.categorias) n.categorias.split(',').forEach(c => cats.add(c.trim())); });
-        return Array.from(cats).sort();
-      },
-      filtrados() {
-        let l = this.negocios;
-        if (this.categoriaSelecionada) l = l.filter(n => n.categorias && n.categorias.includes(this.categoriaSelecionada));
-        if (this.busca) {
-          const b = this.busca.toLowerCase();
-          l = l.filter(n => n.nomefantasia.toLowerCase().includes(b) || n.nomeirmao.toLowerCase().includes(b) || (n.categorias && n.categorias.toLowerCase().includes(b)));
-        }
-        return l;
-      },
-      paginados() { return this.filtrados.slice((this.pagina - 1) * this.itensPag, this.pagina * this.itensPag); },
-      totalPaginas() { return Math.ceil(this.filtrados.length / this.itensPag); }
-    },
-    methods: {
-      // 1. CORREÇÃO DO GET: Chamada direta sem intermediários
-      carregar() {
-        this.loading = true;
-        
-        fetch(`${API_URL}?t=${new Date().getTime()}`)
-          .then(res => {
-            if (!res.ok) throw new Error('Falha na resposta do servidor.');
-            return res.json();
-          })
-          .then(data => {
-            this.negocios = data; // O script já retorna a array de aprovados diretamente
-            this.loading = false;
-          })
-          .catch(err => {
-            console.error("Erro na API (GET):", err);
-            this.loading = false;
-          });
-      },
-      verDetalhes(n) { this.selec = n; this.view = 'detalhes'; window.scrollTo(0,0); },
-      voltar() { this.view = 'grid'; this.step = 1; this.formEnviado = false; window.scrollTo(0,0); },
-      handleFile(e) {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (ev) => { this.form.fileData = ev.target.result; };
-        reader.readAsDataURL(file);
-      },
-      // 2. CORREÇÃO DO POST: Evita o erro de CORS do pré-envio 'OPTIONS' do navegador
-      async enviar() {
-        this.submitting = true;
-        try {
-          const response = await fetch(API_URL, { 
-            method: 'POST', 
-            // text/plain impede o preflight OPTIONS, mas o Apps Script lê o JSON normalmente
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
-            body: JSON.stringify(this.form) 
-          });
-          
-          const resultado = await response.json();
-          
-          if (resultado.status === "Sucesso") {
-            this.formEnviado = true;
-          } else {
-            alert("O servidor encontrou um problema ao salvar os dados.");
-          }
-        } catch (e) {
-          console.error("Erro na API (POST):", e);
-          alert("Erro no envio. Tente novamente.");
-        } finally {
-          this.submitting = false;
-        }
-      },
-      getWpp(t) { if(!t) return "#"; let n = t.replace(/\D/g, ""); return "https://wa.me/" + (n.length === 11 ? "55"+n : n); },
-      getInsta(u) { if(!u) return "#"; let i = u.replace("@","").trim(); return i.includes("http") ? i : "https://instagram.com/"+i; }
-    },
-    mounted() { this.carregar(); }
-  }).mount('#app');
+    })
+    .catch(err => {
+      console.error("Erro no Envio POST:", err);
+      alert("Falha de conexão. Tente novamente.");
+      btn.disabled = false;
+      btn.textContent = 'Finalizar Cadastro';
+    });
+  }
+
+  // SISTEMA MANUAL DE CONTROLE DE FLUXO (ROTEAMENTO)
+  function roteamento(tela) {
+    estado.view = tela;
+    window.scrollTo(0,0);
+    
+    document.getElementById('tela-grid').classList.add('d-none');
+    document.getElementById('tela-detalhes').classList.add('d-none');
+    document.getElementById('tela-cadastro').classList.add('d-none');
+    document.getElementById('btnCadastrarNav').classList.add('d-none');
+
+    if (tela === 'grid') {
+      document.getElementById('tela-grid').classList.remove('d-none');
+      document.getElementById('btnCadastrarNav').classList.remove('d-none');
+      resetFormVisual();
+    } else if (tela === 'detalhes') {
+      document.getElementById('tela-detalhes').classList.remove('d-none');
+    } else if (tela === 'cadastro') {
+      document.getElementById('tela-cadastro').classList.remove('d-none');
+    }
+  }
+
+  function mudarPasso(passo) {
+    if (passo === 2 && !document.getElementById('form-nomeIrmao').value.trim()) return;
+    if (passo === 3 && !document.getElementById('form-nomeFantasia').value.trim()) return;
+
+    estado.step = passo;
+    document.getElementById('passo-1').classList.add('d-none');
+    document.getElementById('passo-2').classList.add('d-none');
+    document.getElementById('passo-3').classList.add('d-none');
+    
+    document.getElementById(`passo-${passo}`).classList.remove('d-none');
+    document.getElementById('barra-progresso').style.width = (passo * 33.3) + '%';
+  }
+
+  function toggleProprietaria() {
+    const v = document.getElementById('form-vinculo').value;
+    const box = document.getElementById('box-proprietaria');
+    if (v !== 'Proprio') box.classList.remove('d-none');
+    else box.classList.add('d-none');
+  }
+
+  function converterImagem(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { estado.form.fileData = ev.target.result; };
+    reader.readAsDataURL(file);
+  }
+
+  function limparFiltros() {
+    document.getElementById('inputBusca').value = '';
+    document.getElementById('selectCategoria').value = '';
+    estado.busca = '';
+    estado.categoriaSelecionada = '';
+    estado.pagina = 1;
+    renderizarGrid();
+  }
+
+  function resetFormVisual() {
+    document.getElementById('formulario-fluxo').classList.remove('d-none');
+    document.getElementById('formulario-sucesso').classList.add('d-none');
+    document.getElementById('form-nomeIrmao').value = '';
+    document.getElementById('form-nomeFantasia').value = '';
+    document.getElementById('form-categorias').value = '';
+    document.getElementById('form-whatsapp').value = '';
+    document.getElementById('form-descricao').value = '';
+    document.getElementById('form-locaisAtendimento').value = '';
+    document.getElementById('form-file').value = '';
+    estado.form.fileData = '';
+    mudarPasso(1);
+  }
+
+  // UTILITÁRIOS DE PARSE DE LINK
+  function formatarWpp(t) { if(!t) return "#"; let n = t.replace(/\D/g, ""); return "https://wa.me/" + (n.length === 11 ? "55"+n : n); }
+  function formatarInsta(u) { if(!u) return "#"; let i = u.replace("@","").trim(); return i.includes("http") ? i : "https://instagram.com/"+i; }
+
+  // EVENTOS DOS INPUTS DE FILTRO
+  document.getElementById('inputBusca').addEventListener('input', (e) => {
+    estado.busca = e.target.value;
+    estado.pagina = 1;
+    renderizarGrid();
+  });
+
+  document.getElementById('selectCategoria').addEventListener('change', (e) => {
+    estado.categoriaSelecionada = e.target.value;
+    estado.pagina = 1;
+    renderizarGrid();
+  });
+
+  // DISPARO INICIAL
+  carregarDados();
 </script>
 </body>
 </html>
