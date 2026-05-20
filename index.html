@@ -227,324 +227,452 @@
 </div>
 
 <script>
-  // URL ÚNICA DIRETA DA API DO GOOGLE MACROS
-  const API_URL = 'https://script.google.com/macros/s/AKfycbzFRcaIk838QmPAAKdb3oHTc0hJdj48j02Mi_AWETDsKe-hPydWha_SrMjo17Pfwewr/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbw0Jw1-Wn7F21RTC7OprJ-ICoPW-xHq__nQM5V-KJl-hYNfq18Rgqmv5YFBUhpWG5Ml/exec';
 
-  // ESTADO GLOBAL DA APLICAÇÃO
-  let estado = {
-    view: 'grid',
-    loading: true,
-    negocios: [],
-    busca: '',
-    categoriaSelecionada: '',
-    pagina: 1,
-    itensPag: 12,
-    step: 1,
-    form: { nomeIrmao: '', grau: 'Aprendiz', vinculo: 'Proprio', nomeProprietaria: '', nomeFantasia: '', categorias: '', whatsapp: '', fileData: '', descricao: '', locaisAtendimento: '', modalidade: 'Presencial', email: 'contato@catalogo.com' }
-  };
+let estado = {
+  negocios: [],
+  loading: true,
+  busca: '',
+  categoriaSelecionada: '',
+  pagina: 1,
+  itensPag: 12
+};
 
-  // REQUISIÇÃO NATIVA VIA FETCH SEM PROXY EXTERNO
-  function carregarDados() {
-    estado.loading = true;
-    document.getElementById('loader').classList.remove('d-none');
-    document.getElementById('grid-negocios').innerHTML = '';
-    
-    // t=timestamp garante que o navegador ignore qualquer cache local antigo
-    fetch(`${API_URL}?t=${Date.now()}`)
-      .then(res => {
-        if (!res.ok) throw new Error();
-        return res.json();
-      })
-      .then(dados => {
-        estado.negocios = dados;
-        estado.loading = false;
-        document.getElementById('loader').classList.add('d-none');
-        construirFiltroCategorias();
-        renderizarGrid();
-      })
-      .catch(err => {
-        console.error("Erro na API de busca:", err);
-        estado.loading = false;
-        document.getElementById('loader').innerHTML = '<p class="text-danger small fw-bold">Erro ao carregar dados. Recarregue a página.</p>';
-      });
-  }
+/**
+ * CARREGAR DADOS
+ */
+async function carregarDados() {
 
-  // MONTA O SELECT DINAMICAMENTE
-  function construirFiltroCategorias() {
-    const cats = new Set();
-    estado.negocios.forEach(n => {
-      if(n.categorias) n.categorias.split(',').forEach(c => cats.add(c.trim()));
-    });
-    const select = document.getElementById('selectCategoria');
-    select.innerHTML = '<option value="">Todas as áreas</option>';
-    Array.from(cats).sort().forEach(cat => {
-      const opt = document.createElement('option');
-      opt.value = cat;
-      opt.textContent = cat;
-      select.appendChild(opt);
-    });
-  }
+  try {
 
-  // FILTRA E RENDERIZA OS CARDS EM TELA
-  function renderizarGrid() {
-    let filtrados = estado.negocios;
+    document.getElementById('loader')
+      .classList.remove('d-none');
 
-    if (estado.categoriaSelecionada) {
-      filtrados = filtrados.filter(n => n.categorias && n.categorias.includes(estado.categoriaSelecionada));
-    }
-    if (estado.busca) {
-      const b = estado.busca.toLowerCase();
-      filtrados = filtrados.filter(n => n.nomefantasia.toLowerCase().includes(b) || n.nomeirmao.toLowerCase().includes(b) || (n.categorias && n.categorias.toLowerCase().includes(b)));
-    }
-
-    const semResultados = document.getElementById('sem-resultados');
-    if (filtrados.length === 0) {
-      semResultados.classList.remove('d-none');
-      document.getElementById('grid-negocios').innerHTML = '';
-      document.getElementById('paginacao-container').innerHTML = '';
-      return;
-    }
-    semResultados.classList.add('d-none');
-
-    // Lógica de Paginação
-    const totalPaginas = Math.ceil(filtrados.length / estado.itensPag);
-    const inicio = (estado.pagina - 1) * estado.itensPag;
-    const paginados = filtrados.slice(inicio, inicio + estado.itensPag);
-
-    const grid = document.getElementById('grid-negocios');
-    grid.innerHTML = '';
-
-    paginados.forEach(n => {
-      const principalCat = n.categorias ? n.categorias.split(',')[0] : '';
-      const foto = n.urlfotologo || n.urlfoto || 'https://via.placeholder.com/400x400?text=Maçonaria+SE';
-      
-      const col = document.createElement('div');
-      col.className = 'col';
-      col.innerHTML = `
-        <div class="card card-negocio shadow-sm">
-          <div class="img-box">
-            ${principalCat ? `<span class="badge-cat">${principalCat}</span>` : ''}
-            <img src="${foto}">
-          </div>
-          <div class="card-body p-3">
-            <h6 class="fw-bold text-uppercase mb-1" style="color: #1a2a3a; font-size: 0.85rem; min-height: 2.2em;">${n.nomefantasia}</h6>
-            <p class="mb-1 small text-secondary text-truncate"><strong>${n.nomeirmao}</strong></p>
-            <p class="text-muted small mb-0"><i class="fa fa-map-marker-alt me-1"></i> ${n.locaisatendimento}</p>
-          </div>
-        </div>
-      `;
-      col.querySelector('.card-negocio').addEventListener('click', () => abrirDetalhes(n));
-      grid.appendChild(col);
-    });
-
-    renderizarPaginacao(totalPaginas);
-  }
-
-  function renderizarPaginacao(total) {
-    const container = document.getElementById('paginacao-container');
-    container.innerHTML = '';
-    if (total <= 1) return;
-
-    const ul = document.createElement('ul');
-    ul.className = 'pagination pagination-sm justify-content-center';
-
-    for(let i = 1; i <= total; i++) {
-      const li = document.createElement('li');
-      li.className = `page-item ${estado.pagina === i ? 'active' : ''}`;
-      li.innerHTML = `<a class="page-link shadow-sm" href="#">${i}</a>`;
-      li.querySelector('a').addEventListener('click', (e) => {
-        e.preventDefault();
-        estado.pagina = i;
-        renderizarGrid();
-      });
-      ul.appendChild(li);
-    }
-    container.appendChild(ul);
-  }
-
-  // TELA DETALHES DO ITEM
-  function abrirDetalhes(n) {
-    document.getElementById('detalhe-nome').textContent = n.nomefantasia;
-    document.getElementById('detalhe-slogan').textContent = n.slogan || '';
-    document.getElementById('detalhe-img').src = n.urlfotologo || n.urlfoto || 'https://via.placeholder.com/400x400?text=Logo';
-    
-    if (n.vinculo && n.vinculo.toLowerCase() === 'proprio') {
-      document.getElementById('detalhe-responsavel').textContent = n.nomeirmao;
-      document.getElementById('detalhe-responsavel-sub').textContent = n.grau;
-    } else {
-      document.getElementById('detalhe-responsavel').textContent = n.nomeproprietaria || n.nomecompanheira || 'Proprietária';
-      document.getElementById('detalhe-responsavel-sub').textContent = 'Proprietária';
-    }
-
-    document.getElementById('detalhe-irmao').textContent = `Ir. ${n.nomeirmao}`;
-    document.getElementById('detalhe-grau').textContent = n.grau;
-    document.getElementById('detalhe-descricao').textContent = n.descricao;
-    
-    document.getElementById('detalhe-modalidade').innerHTML = `<i class="fa fa-check-circle me-1 text-success"></i> ${n.modalidade || 'Presencial'}`;
-    document.getElementById('detalhe-locais').innerHTML = `<i class="fa fa-map-marker-alt me-1 text-danger"></i> ${n.locaisatendimento}`;
-
-    const divDif = document.getElementById('detalhe-diferencial-box');
-    if (n.diferencial) {
-      divDif.classList.remove('d-none');
-      document.getElementById('detalhe-diferencial').textContent = n.diferencial;
-    } else {
-      divDif.classList.add('d-none');
-    }
-
-    // Configuração dos Botões de Link Direto
-    setupBotaoAcao('btn-wpp', n.whatsapp, formatarWpp(n.whatsapp), 'FAB', 'fa-whatsapp', 'FALAR NO WHATSAPP', 'WHATSAPP INDISPONÍVEL');
-    setupBotaoAcao('btn-insta', n.instagram, formatarInsta(n.instagram), 'FAB', 'fa-instagram', 'VER INSTAGRAM', 'INSTAGRAM INDISPONÍVEL');
-    setupBotaoAcao('btn-site', n.site, n.site, 'FA', 'fa-globe', 'VISITAR SITE', 'SITE INDISPONÍVEL');
-
-    roteamento('detalhes');
-  }
-
-  function setupBotaoAcao(id, valor, link, tipoIcone, icone, textoAtivo, textoInativo) {
-    const btn = document.getElementById(id);
-    const span = btn.querySelector('span');
-    if (valor) {
-      btn.classList.remove('disabled');
-      btn.href = link;
-      span.textContent = textoAtivo;
-    } else {
-      btn.classList.add('disabled');
-      btn.href = '#';
-      span.textContent = textoInativo;
-    }
-  }
-
-  // ENVIAR FORMULÁRIO NATIVO USANDO TEXT/PLAIN CONTRA CORS OPTIONS
-  function enviarFormulario() {
-    const btn = document.getElementById('btnFinalizar');
-    btn.disabled = true;
-    btn.textContent = 'Enviando...';
-
-    // Captura os dados atualizados das inputs textuais
-    estado.form.nomeIrmao = document.getElementById('form-nomeIrmao').value;
-    estado.form.grau = document.getElementById('form-grau').value;
-    estado.form.vinculo = document.getElementById('form-vinculo').value;
-    estado.form.nomeProprietaria = document.getElementById('form-nomeProprietaria').value;
-    estado.form.nomeFantasia = document.getElementById('form-nomeFantasia').value;
-    estado.form.categorias = document.getElementById('form-categorias').value;
-    estado.form.whatsapp = document.getElementById('form-whatsapp').value;
-    estado.form.descricao = document.getElementById('form-descricao').value;
-    estado.form.locaisAtendimento = document.getElementById('form-locaisAtendimento').value;
-
-    fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Truque primordial anti-CORS
-      body: JSON.stringify(estado.form)
-    })
-    .then(res => res.json())
-    .then(resultado => {
-      if (resultado.status === "Sucesso") {
-        document.getElementById('formulario-fluxo').classList.add('d-none');
-        document.getElementById('formulario-sucesso').classList.remove('d-none');
-      } else {
-        alert("Erro no servidor ao tentar salvar.");
-        btn.disabled = false;
-        btn.textContent = 'Finalizar Cadastro';
+    const response = await fetch(
+      `${API_URL}?t=${Date.now()}`,
+      {
+        method: 'GET',
+        mode: 'cors',
+        redirect: 'follow',
+        headers: {
+          'Accept': 'application/json'
+        }
       }
-    })
-    .catch(err => {
-      console.error("Erro no Envio POST:", err);
-      alert("Falha de conexão. Tente novamente.");
-      btn.disabled = false;
-      btn.textContent = 'Finalizar Cadastro';
+    );
+
+    if (!response.ok) {
+      throw new Error('Erro HTTP');
+    }
+
+    const json = await response.json();
+
+    console.log('API:', json);
+
+    if (!json.success) {
+      throw new Error(json.error || 'Erro API');
+    }
+
+    estado.negocios = json.data || [];
+
+    construirFiltroCategorias();
+
+    renderizarGrid();
+
+  } catch (err) {
+
+    console.error(err);
+
+    document.getElementById('loader').innerHTML = `
+      <div class="alert alert-danger rounded-4">
+        Erro ao carregar dados da API.
+      </div>
+    `;
+
+  } finally {
+
+    estado.loading = false;
+
+    document.getElementById('loader')
+      .classList.add('d-none');
+  }
+}
+
+/**
+ * FILTRO CATEGORIAS
+ */
+function construirFiltroCategorias() {
+
+  const select = document.getElementById('selectCategoria');
+
+  const categorias = new Set();
+
+  estado.negocios.forEach(item => {
+
+    if (!item.categorias) return;
+
+    item.categorias
+      .split(',')
+      .forEach(cat => categorias.add(cat.trim()));
+  });
+
+  select.innerHTML = `
+    <option value="">
+      Todas as áreas
+    </option>
+  `;
+
+  [...categorias]
+    .sort()
+    .forEach(cat => {
+
+      const option = document.createElement('option');
+
+      option.value = cat;
+      option.textContent = cat;
+
+      select.appendChild(option);
+    });
+}
+
+/**
+ * GRID
+ */
+function renderizarGrid() {
+
+  let dados = [...estado.negocios];
+
+  /**
+   * FILTRO CATEGORIA
+   */
+  if (estado.categoriaSelecionada) {
+
+    dados = dados.filter(item => {
+
+      return item.categorias &&
+        item.categorias.includes(
+          estado.categoriaSelecionada
+        );
     });
   }
 
-  // SISTEMA MANUAL DE CONTROLE DE FLUXO (ROTEAMENTO)
-  function roteamento(tela) {
-    estado.view = tela;
-    window.scrollTo(0,0);
-    
-    document.getElementById('tela-grid').classList.add('d-none');
-    document.getElementById('tela-detalhes').classList.add('d-none');
-    document.getElementById('tela-cadastro').classList.add('d-none');
-    document.getElementById('btnCadastrarNav').classList.add('d-none');
+  /**
+   * BUSCA
+   */
+  if (estado.busca) {
 
-    if (tela === 'grid') {
-      document.getElementById('tela-grid').classList.remove('d-none');
-      document.getElementById('btnCadastrarNav').classList.remove('d-none');
-      resetFormVisual();
-    } else if (tela === 'detalhes') {
-      document.getElementById('tela-detalhes').classList.remove('d-none');
-    } else if (tela === 'cadastro') {
-      document.getElementById('tela-cadastro').classList.remove('d-none');
-    }
+    const termo = estado.busca.toLowerCase();
+
+    dados = dados.filter(item => {
+
+      return (
+        (item.nomefantasia || '')
+          .toLowerCase()
+          .includes(termo)
+
+        ||
+
+        (item.nomeirmao || '')
+          .toLowerCase()
+          .includes(termo)
+
+        ||
+
+        (item.categorias || '')
+          .toLowerCase()
+          .includes(termo)
+      );
+    });
   }
 
-  function mudarPasso(passo) {
-    if (passo === 2 && !document.getElementById('form-nomeIrmao').value.trim()) return;
-    if (passo === 3 && !document.getElementById('form-nomeFantasia').value.trim()) return;
+  /**
+   * SEM RESULTADOS
+   */
+  const sem = document.getElementById('sem-resultados');
 
-    estado.step = passo;
-    document.getElementById('passo-1').classList.add('d-none');
-    document.getElementById('passo-2').classList.add('d-none');
-    document.getElementById('passo-3').classList.add('d-none');
-    
-    document.getElementById(`passo-${passo}`).classList.remove('d-none');
-    document.getElementById('barra-progresso').style.width = (passo * 33.3) + '%';
+  if (dados.length === 0) {
+
+    sem.classList.remove('d-none');
+
+    document.getElementById('grid-negocios')
+      .innerHTML = '';
+
+    return;
   }
 
-  function toggleProprietaria() {
-    const v = document.getElementById('form-vinculo').value;
-    const box = document.getElementById('box-proprietaria');
-    if (v !== 'Proprio') box.classList.remove('d-none');
-    else box.classList.add('d-none');
+  sem.classList.add('d-none');
+
+  /**
+   * PAGINAÇÃO
+   */
+  const inicio =
+    (estado.pagina - 1) * estado.itensPag;
+
+  const itens = dados.slice(
+    inicio,
+    inicio + estado.itensPag
+  );
+
+  const grid =
+    document.getElementById('grid-negocios');
+
+  grid.innerHTML = '';
+
+  itens.forEach(item => {
+
+    const foto =
+      item.urlfotologo ||
+      'https://via.placeholder.com/600x600?text=Sem+Imagem';
+
+    const categoria =
+      item.categorias
+        ? item.categorias.split(',')[0]
+        : '';
+
+    const div = document.createElement('div');
+
+    div.className = 'col';
+
+    div.innerHTML = `
+      <div class="card card-negocio h-100 shadow-sm">
+
+        <div class="img-box">
+
+          ${
+            categoria
+            ? `<span class="badge-cat">${categoria}</span>`
+            : ''
+          }
+
+          <img
+            loading="lazy"
+            src="${foto}"
+            alt="${item.nomefantasia}"
+          >
+
+        </div>
+
+        <div class="card-body p-3">
+
+          <h6
+            class="fw-bold text-uppercase mb-1"
+            style="
+              color:#1a2a3a;
+              font-size:.85rem;
+              min-height:2.5em;
+            "
+          >
+            ${item.nomefantasia || ''}
+          </h6>
+
+          <p class="small text-secondary mb-1">
+            <strong>
+              ${item.nomeirmao || ''}
+            </strong>
+          </p>
+
+          <p class="small text-muted mb-0">
+            <i class="fa fa-map-marker-alt me-1"></i>
+            ${item.locaisatendimento || ''}
+          </p>
+
+        </div>
+      </div>
+    `;
+
+    div.querySelector('.card-negocio')
+      .addEventListener(
+        'click',
+        () => abrirDetalhes(item)
+      );
+
+    grid.appendChild(div);
+  });
+}
+
+/**
+ * DETALHES
+ */
+function abrirDetalhes(item) {
+
+  document.getElementById('detalhe-nome')
+    .textContent =
+      item.nomefantasia || '';
+
+  document.getElementById('detalhe-slogan')
+    .textContent =
+      item.slogan || '';
+
+  document.getElementById('detalhe-img')
+    .src =
+      item.urlfotologo ||
+      'https://via.placeholder.com/600';
+
+  document.getElementById('detalhe-responsavel')
+    .textContent =
+      item.nomeproprietaria ||
+      item.nomeirmao ||
+      '';
+
+  document.getElementById('detalhe-responsavel-sub')
+    .textContent =
+      item.vinculo || '';
+
+  document.getElementById('detalhe-irmao')
+    .textContent =
+      item.nomeirmao || '';
+
+  document.getElementById('detalhe-grau')
+    .textContent =
+      item.grau || '';
+
+  document.getElementById('detalhe-descricao')
+    .textContent =
+      item.descricao || '';
+
+  document.getElementById('detalhe-modalidade')
+    .innerHTML =
+      `<i class="fa fa-check-circle me-1 text-success"></i>
+      ${item.modalidade || ''}`;
+
+  document.getElementById('detalhe-locais')
+    .innerHTML =
+      `<i class="fa fa-map-marker-alt me-1 text-danger"></i>
+      ${item.locaisatendimento || ''}`;
+
+  /**
+   * LINKS
+   */
+  configurarBotao(
+    'btn-wpp',
+    item.whatsapp
+      ? `https://wa.me/55${item.whatsapp.replace(/\D/g,'')}`
+      : '',
+    'FALAR NO WHATSAPP',
+    'WHATSAPP INDISPONÍVEL'
+  );
+
+  configurarBotao(
+    'btn-insta',
+    item.instagram || '',
+    'VER INSTAGRAM',
+    'INSTAGRAM INDISPONÍVEL'
+  );
+
+  configurarBotao(
+    'btn-site',
+    item.site || '',
+    'VISITAR SITE',
+    'SITE INDISPONÍVEL'
+  );
+
+  roteamento('detalhes');
+}
+
+/**
+ * BOTÕES
+ */
+function configurarBotao(
+  id,
+  link,
+  ativo,
+  inativo
+) {
+
+  const btn =
+    document.getElementById(id);
+
+  const span =
+    btn.querySelector('span');
+
+  if (link) {
+
+    btn.href = link;
+
+    btn.classList.remove('disabled');
+
+    span.textContent = ativo;
+
+  } else {
+
+    btn.href = '#';
+
+    btn.classList.add('disabled');
+
+    span.textContent = inativo;
+  }
+}
+
+/**
+ * ROTEAMENTO
+ */
+function roteamento(tela) {
+
+  document
+    .getElementById('tela-grid')
+    .classList.add('d-none');
+
+  document
+    .getElementById('tela-detalhes')
+    .classList.add('d-none');
+
+  document
+    .getElementById('tela-cadastro')
+    .classList.add('d-none');
+
+  if (tela === 'grid') {
+
+    document
+      .getElementById('tela-grid')
+      .classList.remove('d-none');
   }
 
-  function converterImagem(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => { estado.form.fileData = ev.target.result; };
-    reader.readAsDataURL(file);
+  if (tela === 'detalhes') {
+
+    document
+      .getElementById('tela-detalhes')
+      .classList.remove('d-none');
   }
 
-  function limparFiltros() {
-    document.getElementById('inputBusca').value = '';
-    document.getElementById('selectCategoria').value = '';
-    estado.busca = '';
-    estado.categoriaSelecionada = '';
-    estado.pagina = 1;
-    renderizarGrid();
+  if (tela === 'cadastro') {
+
+    document
+      .getElementById('tela-cadastro')
+      .classList.remove('d-none');
   }
 
-  function resetFormVisual() {
-    document.getElementById('formulario-fluxo').classList.remove('d-none');
-    document.getElementById('formulario-sucesso').classList.add('d-none');
-    document.getElementById('form-nomeIrmao').value = '';
-    document.getElementById('form-nomeFantasia').value = '';
-    document.getElementById('form-categorias').value = '';
-    document.getElementById('form-whatsapp').value = '';
-    document.getElementById('form-descricao').value = '';
-    document.getElementById('form-locaisAtendimento').value = '';
-    document.getElementById('form-file').value = '';
-    estado.form.fileData = '';
-    mudarPasso(1);
-  }
+  window.scrollTo(0,0);
+}
 
-  // UTILITÁRIOS DE PARSE DE LINK
-  function formatarWpp(t) { if(!t) return "#"; let n = t.replace(/\D/g, ""); return "https://wa.me/" + (n.length === 11 ? "55"+n : n); }
-  function formatarInsta(u) { if(!u) return "#"; let i = u.replace("@","").trim(); return i.includes("http") ? i : "https://instagram.com/"+i; }
+/**
+ * EVENTOS
+ */
+document
+  .getElementById('inputBusca')
+  .addEventListener('input', e => {
 
-  // EVENTOS DOS INPUTS DE FILTRO
-  document.getElementById('inputBusca').addEventListener('input', (e) => {
     estado.busca = e.target.value;
+
     estado.pagina = 1;
+
     renderizarGrid();
   });
 
-  document.getElementById('selectCategoria').addEventListener('change', (e) => {
-    estado.categoriaSelecionada = e.target.value;
+document
+  .getElementById('selectCategoria')
+  .addEventListener('change', e => {
+
+    estado.categoriaSelecionada =
+      e.target.value;
+
     estado.pagina = 1;
+
     renderizarGrid();
   });
 
-  // DISPARO INICIAL
-  carregarDados();
+/**
+ * INIT
+ */
+carregarDados();
 </script>
 </body>
 </html>
