@@ -1,678 +1,1176 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+
   <title>Catálogo de Negócios Maçonaria Sergipe</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <!-- Bootstrap -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <!-- Vue CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
   <style>
-    body { background-color: #f4f6f9; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; overflow-x: hidden; }
-    .navbar-brand { font-size: 0.95rem; line-height: 1.2; white-space: normal; max-width: 180px; cursor: pointer; }
-    .btn-cadastrar { background: #ffc107; color: #1a2a3a; font-weight: bold; border: none; border-radius: 20px; padding: 5px 15px; font-size: 0.85rem; transition: 0.3s; }
-    .btn-cadastrar:hover { background: #e0a800; transform: scale(1.05); }
-    .filter-section { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; }
-    .label-v { color: #888; font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; display: block; }
-    .card-negocio { border: none; border-radius: 12px; cursor: pointer; transition: 0.3s; background: white; height: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden; }
-    .card-negocio:hover { transform: translateY(-4px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
-    .img-box { width: 100%; aspect-ratio: 1 / 1; position: relative; overflow: hidden; background: #eee; }
-    .img-box img { width: 100%; height: 100%; object-fit: cover; }
-    .badge-cat { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.75); color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.6rem; font-weight: bold; z-index: 2; }
-    .detail-bg { background: #1a2a3a; padding: 40px 0; text-align: center; color: white; }
-    .img-detail-wrapper { width: 160px; height: 160px; margin: 0 auto -80px auto; position: relative; z-index: 5; }
-    .img-detail-wrapper img { width: 100%; height: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 20px; border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); background: white; }
-    .detail-content { margin-top: 0; padding-top: 90px; background: white; border-radius: 30px 30px 0 0; min-height: 100vh; }
-    .btn-acao { border-radius: 15px; padding: 15px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; text-decoration: none !important; color: white; transition: 0.2s; font-size: 0.9rem; }
-    .btn-acao:not(.disabled):active { transform: scale(0.96); }
-    .btn-acao.disabled { background: #e0e0e0 !important; color: #aaa !important; cursor: not-allowed; pointer-events: none; box-shadow: none; }
-    .form-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 600px; margin: auto; }
-    .progress { height: 6px; border-radius: 10px; margin-bottom: 20px; }
-    .d-none { display: none !important; }
+    :root {
+      --primary-dark: #182434;
+      --primary-gold: #ffc107;
+      --bg-light: #f4f6f9;
+      --card-radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-light);
+      font-family:
+        "Segoe UI",
+        system-ui,
+        -apple-system,
+        sans-serif;
+      overflow-x: hidden;
+      color: #1f2937;
+    }
+
+    .navbar-custom {
+      background: linear-gradient(135deg, #182434, #24364d);
+      backdrop-filter: blur(10px);
+    }
+
+    .navbar-brand-custom {
+      font-size: 0.95rem;
+      line-height: 1.2;
+      white-space: normal;
+      max-width: 220px;
+      cursor: pointer;
+    }
+
+    .btn-cadastrar {
+      background: var(--primary-gold);
+      color: #1a2a3a;
+      font-weight: 700;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 0.85rem;
+      transition: 0.25s ease;
+      box-shadow: 0 10px 25px rgba(255, 193, 7, 0.2);
+    }
+
+    .btn-cadastrar:hover {
+      transform: translateY(-2px);
+      background: #ffca2c;
+    }
+
+    .filter-card,
+    .form-box {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      padding: 24px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.06);
+    }
+
+    .label-v {
+      color: #6b7280;
+      font-weight: 800;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .form-control,
+    .form-select,
+    textarea {
+      border-radius: 14px !important;
+      min-height: 48px;
+      border: 1px solid #dbe1e8;
+      padding-left: 14px;
+      box-shadow: none !important;
+    }
+
+    textarea.form-control {
+      min-height: 120px;
+      resize: none;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #ffc107;
+      box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.2) !important;
+    }
+
+    .card-negocio {
+      border: none;
+      border-radius: var(--card-radius);
+      overflow: hidden;
+      transition: 0.3s ease;
+      background: white;
+      cursor: pointer;
+      height: 100%;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .card-negocio:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .img-box {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      position: relative;
+      background: #e5e7eb;
+    }
+
+    .img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: 0.3s ease;
+    }
+
+    .card-negocio:hover .img-box img {
+      transform: scale(1.03);
+    }
+
+    .badge-cat {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 5;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+    }
+
+    .detail-bg {
+      background: linear-gradient(135deg, #182434, #24364d);
+      padding: 50px 0 110px;
+      text-align: center;
+      color: white;
+    }
+
+    .img-detail-wrapper {
+      width: 170px;
+      height: 170px;
+      margin: -85px auto 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .img-detail-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 24px;
+      border: 5px solid white;
+      background: white;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .detail-content {
+      background: white;
+      border-radius: 30px 30px 0 0;
+      min-height: 100vh;
+      padding-top: 40px;
+    }
+
+    .info-card {
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 20px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .btn-acao {
+      border-radius: 18px;
+      padding: 15px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none !important;
+      color: white;
+      transition: 0.2s ease;
+      font-size: 0.9rem;
+      min-height: 58px;
+    }
+
+    .btn-acao:hover {
+      transform: translateY(-2px);
+      opacity: 0.96;
+    }
+
+    .btn-acao.disabled {
+      background: #e5e7eb !important;
+      color: #9ca3af !important;
+      pointer-events: none;
+      box-shadow: none;
+    }
+
+    .progress {
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #e5e7eb;
+    }
+
+    .form-step-enter {
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 576px) {
+      .navbar-brand-custom {
+        max-width: 160px;
+        font-size: 0.82rem;
+      }
+
+      .btn-cadastrar {
+        padding: 8px 14px;
+        font-size: 0.75rem;
+      }
+
+      .filter-card,
+      .form-box {
+        padding: 18px;
+        border-radius: 20px;
+      }
+
+      .detail-bg {
+        padding: 40px 0 95px;
+      }
+
+      .img-detail-wrapper {
+        width: 140px;
+        height: 140px;
+        margin-top: -70px;
+      }
+    }
   </style>
 </head>
+
 <body>
+  <div id="app">
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top shadow-sm">
+      <div class="container py-2">
+        <div
+          class="navbar-brand navbar-brand-custom fw-bold"
+          @click="roteamento('grid')"
+        >
+          Catálogo de Negócios
+          <br />
+          <small class="opacity-75">
+            Maçonaria Sergipe
+          </small>
+        </div>
 
-<div id="app">
-  <!-- NAVBAR -->
-  <nav class="navbar navbar-dark bg-dark sticky-top shadow">
-    <div class="container d-flex justify-content-between align-items-center px-3">
-      <span class="navbar-brand fw-bold" onclick="roteamento('grid')">
-        Catálogo de Negócios <br><small class="opacity-75">Maçonaria Sergipe</small>
-      </span>
-      <button id="btnCadastrarNav" class="btn-cadastrar shadow-sm" onclick="roteamento('cadastro')">
-        <i class="fa fa-plus-circle me-1"></i> Cadastrar
-      </button>
-    </div>
-  </nav>
+        <button
+          class="btn btn-cadastrar"
+          @click="roteamento('cadastro')"
+        >
+          <i class="fa fa-plus-circle me-2"></i>
+          Cadastrar
+        </button>
+      </div>
+    </nav>
 
-  <!-- TELA 1: GRID / CATALOGO -->
-  <div id="tela-grid" class="container py-4">
-    <div class="filter-section text-start mx-2">
-        <div class="row g-2">
-          <div class="col-12 col-md-7">
-            <label class="label-v">Buscar</label>
-            <input type="text" id="inputBusca" class="form-control form-control-sm shadow-sm" placeholder="Nome, área ou irmão...">
+    <!-- GRID -->
+    <section
+      v-if="tela === 'grid'"
+      class="container py-4"
+    >
+      <!-- FILTROS -->
+      <div class="filter-card mb-4">
+        <div class="row g-3">
+          <div class="col-12 col-lg-8">
+            <label class="label-v">
+              Buscar
+            </label>
+
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0">
+                <i class="fa fa-search text-muted"></i>
+              </span>
+
+              <input
+                v-model="estado.busca"
+                type="text"
+                class="form-control border-start-0"
+                placeholder="Nome, área ou irmão..."
+              />
+            </div>
           </div>
-          <div class="col-12 col-md-5">
-            <label class="label-v">Área de Atuação</label>
-            <select id="selectCategoria" class="form-select form-select-sm shadow-sm">
-              <option value="">Todas as áreas</option>
+
+          <div class="col-12 col-lg-4">
+            <label class="label-v">
+              Área de Atuação
+            </label>
+
+            <select
+              v-model="estado.categoriaSelecionada"
+              class="form-select"
+            >
+              <option value="">
+                Todas as áreas
+              </option>
+
+              <option
+                v-for="cat in categorias"
+                :key="cat"
+                :value="cat"
+              >
+                {{ cat }}
+              </option>
             </select>
           </div>
         </div>
-    </div>
+      </div>
 
-    <!-- Loader -->
-    <div id="loader" class="text-center py-5">
-      <div class="spinner-border text-primary" role="status"></div>
-      <p class="mt-3 text-muted small fw-bold">Sincronizando com a Planilha...</p>
-    </div>
+      <!-- LOADER -->
+      <div
+        v-if="estado.loading"
+        class="text-center py-5"
+      >
+        <div
+          class="spinner-border text-warning"
+          role="status"
+        ></div>
 
-    <!-- Sem Resultados -->
-    <div id="sem-resultados" class="text-center py-5 d-none">
-      <i class="fa fa-search-minus fa-3x text-muted mb-3"></i>
-      <p class="text-muted">Nenhum resultado encontrado.</p>
-      <button class="btn btn-outline-dark btn-sm rounded-pill px-4" onclick="limparFiltros()">Limpar Filtros</button>
-    </div>
+        <p class="mt-3 text-muted fw-semibold small">
+          Sincronizando com a Planilha...
+        </p>
+      </div>
 
-    <!-- Grid de Cards -->
-    <div id="grid-negocios" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 text-start mx-1"></div>
+      <!-- SEM RESULTADO -->
+      <div
+        v-if="!estado.loading && negociosFiltrados.length === 0"
+        class="text-center py-5"
+      >
+        <i class="fa fa-search-minus fa-3x text-secondary mb-3"></i>
 
-    <!-- Paginação -->
-    <nav id="paginacao-container" class="mt-5"></nav>
-  </div>
+        <p class="text-muted">
+          Nenhum resultado encontrado.
+        </p>
 
-  <!-- TELA 2: DETALHES -->
-  <div id="tela-detalhes" class="d-none">
-    <div class="detail-bg px-3">
-        <div class="container">
-            <h2 id="detalhe-nome" class="fw-bold text-uppercase mb-1"></h2>
-            <p id="detalhe-slogan" class="fst-italic opacity-75 small mb-0"></p>
+        <button
+          class="btn btn-outline-dark rounded-pill px-4"
+          @click="limparFiltros"
+        >
+          Limpar Filtros
+        </button>
+      </div>
+
+      <!-- GRID -->
+      <div class="row g-4">
+        <div
+          v-for="item in negociosPaginados"
+          :key="item.id"
+          class="col-12 col-sm-6 col-md-4 col-xl-3"
+        >
+          <div
+            class="card-negocio"
+            @click="abrirDetalhes(item)"
+          >
+            <div class="img-box">
+              <span
+                v-if="item.categorias"
+                class="badge-cat"
+              >
+                {{ item.categorias.split(',')[0] }}
+              </span>
+
+              <img
+                :src="item.urlfotologo || 'https://via.placeholder.com/600x600?text=Sem+Imagem'"
+                :alt="item.nomefantasia"
+                loading="lazy"
+              />
+            </div>
+
+            <div class="p-3">
+              <h6
+                class="fw-bold text-uppercase mb-2"
+                style="
+                  color:#182434;
+                  min-height: 44px;
+                  font-size: .9rem;
+                "
+              >
+                {{ item.nomefantasia || '' }}
+              </h6>
+
+              <p class="small mb-1 text-dark fw-semibold">
+                {{ item.nomeirmao || '' }}
+              </p>
+
+              <p class="small text-muted mb-0">
+                <i class="fa fa-location-dot me-1"></i>
+                {{ item.locaisatendimento || '' }}
+              </p>
+            </div>
+          </div>
         </div>
-    </div>
-    <div class="img-detail-wrapper">
-        <img id="detalhe-img" src="">
-    </div>
-    <div class="container detail-content text-start">
-      <div class="row justify-content-center">
-        <div class="col-lg-8">
-          <div class="text-center mb-4">
-            <button class="btn btn-light btn-sm rounded-pill px-4 border shadow-sm" onclick="roteamento('grid')">
-                <i class="fa fa-arrow-left me-1"></i> Voltar
+      </div>
+    </section>
+
+    <!-- DETALHES -->
+    <section v-if="tela === 'detalhes'">
+      <div class="detail-bg px-3">
+        <div class="container">
+          <h2 class="fw-bold text-uppercase mb-2">
+            {{ detalhe.nomefantasia }}
+          </h2>
+
+          <p class="opacity-75 fst-italic small mb-0">
+            {{ detalhe.slogan }}
+          </p>
+        </div>
+      </div>
+
+      <div class="img-detail-wrapper">
+        <img
+          :src="detalhe.urlfotologo || 'https://via.placeholder.com/600'"
+          alt=""
+        />
+      </div>
+
+      <div class="detail-content">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-8">
+              <div class="text-center mb-4">
+                <button
+                  class="btn btn-light border rounded-pill px-4 shadow-sm"
+                  @click="roteamento('grid')"
+                >
+                  <i class="fa fa-arrow-left me-2"></i>
+                  Voltar
+                </button>
+              </div>
+
+              <div class="info-card mb-4">
+                <div class="row g-3">
+                  <div class="col-6 border-end">
+                    <label class="label-v">
+                      Responsável
+                    </label>
+
+                    <div class="fw-bold small">
+                      {{
+                        detalhe.nomeproprietaria
+                        || detalhe.nomeirmao
+                      }}
+                    </div>
+
+                    <div class="small text-muted">
+                      {{ detalhe.vinculo }}
+                    </div>
+                  </div>
+
+                  <div class="col-6">
+                    <label class="label-v">
+                      Indicação / Ir.
+                    </label>
+
+                    <div class="fw-bold small">
+                      {{ detalhe.nomeirmao }}
+                    </div>
+
+                    <div class="small text-muted">
+                      {{ detalhe.grau }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="px-lg-3 pb-5">
+                <label class="label-v">
+                  Sobre o Negócio
+                </label>
+
+                <p
+                  class="text-secondary small"
+                  style="
+                    white-space: pre-line;
+                    line-height: 1.8;
+                  "
+                >
+                  {{ detalhe.descricao }}
+                </p>
+
+                <div class="row mb-4">
+                  <div class="col-6">
+                    <label class="label-v">
+                      Modalidade
+                    </label>
+
+                    <p class="small fw-bold">
+                      <i class="fa fa-check-circle text-success me-1"></i>
+                      {{ detalhe.modalidade }}
+                    </p>
+                  </div>
+
+                  <div class="col-6">
+                    <label class="label-v">
+                      Onde Atende
+                    </label>
+
+                    <p class="small fw-bold">
+                      <i class="fa fa-location-dot text-danger me-1"></i>
+                      {{ detalhe.locaisatendimento }}
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  v-if="detalhe.diferencial"
+                  class="alert alert-success border-0 shadow-sm rounded-4"
+                >
+                  <i class="fa fa-star me-2"></i>
+
+                  <strong class="small">
+                    Diferencial para Irmãos:
+                  </strong>
+
+                  <br />
+
+                  <span class="small">
+                    {{ detalhe.diferencial }}
+                  </span>
+                </div>
+
+                <!-- BOTÕES -->
+                <div class="mt-5">
+                  <a
+                    :href="linkWhatsapp"
+                    target="_blank"
+                    class="btn-acao shadow-sm"
+                    :class="{ disabled: !detalhe.whatsapp }"
+                    style="background:#25d366;"
+                  >
+                    <i class="fab fa-whatsapp me-2 fa-lg"></i>
+
+                    <span>
+                      {{
+                        detalhe.whatsapp
+                          ? 'FALAR NO WHATSAPP'
+                          : 'WHATSAPP INDISPONÍVEL'
+                      }}
+                    </span>
+                  </a>
+
+                  <a
+                    :href="detalhe.instagram || '#'"
+                    target="_blank"
+                    class="btn-acao shadow-sm"
+                    :class="{ disabled: !detalhe.instagram }"
+                    style="
+                      background:
+                      linear-gradient(
+                        45deg,
+                        #f09433,
+                        #e6683c,
+                        #dc2743,
+                        #cc2366,
+                        #bc1888
+                      );
+                    "
+                  >
+                    <i class="fab fa-instagram me-2 fa-lg"></i>
+
+                    <span>
+                      {{
+                        detalhe.instagram
+                          ? 'VER INSTAGRAM'
+                          : 'INSTAGRAM INDISPONÍVEL'
+                      }}
+                    </span>
+                  </a>
+
+                  <a
+                    :href="detalhe.site || '#'"
+                    target="_blank"
+                    class="btn-acao shadow-sm"
+                    :class="{ disabled: !detalhe.site }"
+                    style="background:#1f2937;"
+                  >
+                    <i class="fa fa-globe me-2 fa-lg"></i>
+
+                    <span>
+                      {{
+                        detalhe.site
+                          ? 'VISITAR SITE'
+                          : 'SITE INDISPONÍVEL'
+                      }}
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CADASTRO -->
+    <section
+      v-if="tela === 'cadastro'"
+      class="container py-4"
+    >
+      <div class="form-box mx-auto">
+        <div
+          class="d-flex justify-content-between align-items-center mb-4"
+        >
+          <div>
+            <h4 class="fw-bold mb-1">
+              Novo Cadastro
+            </h4>
+
+            <small class="text-muted">
+              Preencha os dados abaixo
+            </small>
+          </div>
+
+          <button
+            class="btn-close"
+            @click="roteamento('grid')"
+          ></button>
+        </div>
+
+        <!-- SUCESSO -->
+        <div
+          v-if="cadastroSucesso"
+          class="text-center py-5"
+        >
+          <i class="fa fa-circle-check fa-4x text-success mb-3"></i>
+
+          <h5 class="fw-bold">
+            Cadastro Enviado!
+          </h5>
+
+          <p class="text-muted small">
+            Obrigado! Seus dados foram recebidos. TFA!
+          </p>
+
+          <button
+            class="btn btn-dark rounded-pill px-5 mt-3"
+            @click="roteamento('grid')"
+          >
+            Ir para o Catálogo
+          </button>
+        </div>
+
+        <!-- FORM -->
+        <div v-else>
+          <!-- PROGRESS -->
+          <div class="progress mb-4">
+            <div
+              class="progress-bar bg-warning"
+              :style="{ width: progresso + '%' }"
+            ></div>
+          </div>
+
+          <!-- PASSO 1 -->
+          <div
+            v-if="passo === 1"
+            class="form-step-enter"
+          >
+            <div class="mb-3">
+              <label class="label-v">
+                Nome do Irmão
+              </label>
+
+              <input
+                v-model="form.nomeIrmao"
+                type="text"
+                class="form-control"
+                placeholder="Nome completo"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="label-v">
+                Grau
+              </label>
+
+              <select
+                v-model="form.grau"
+                class="form-select"
+              >
+                <option value="Aprendiz">
+                  Aprendiz
+                </option>
+
+                <option value="Companheiro">
+                  Companheiro
+                </option>
+
+                <option value="Mestre">
+                  Mestre
+                </option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="label-v">
+                Vínculo
+              </label>
+
+              <select
+                v-model="form.vinculo"
+                class="form-select"
+              >
+                <option value="Proprio">
+                  Negócio próprio
+                </option>
+
+                <option value="Companheira">
+                  Da esposa/companheira
+                </option>
+
+                <option value="Outro">
+                  De outro familiar
+                </option>
+              </select>
+            </div>
+
+            <div
+              v-if="form.vinculo !== 'Proprio'"
+              class="mb-3"
+            >
+              <label class="label-v">
+                Nome da Proprietária
+              </label>
+
+              <input
+                v-model="form.nomeProprietaria"
+                type="text"
+                class="form-control"
+              />
+            </div>
+
+            <button
+              class="btn btn-dark w-100 rounded-pill py-3"
+              @click="mudarPasso(2)"
+            >
+              Próximo
             </button>
           </div>
-          
-          <div class="row mb-4 bg-light p-3 rounded-4 mx-1 shadow-sm border">
-            <div class="col-6 border-end text-start">
-              <label class="label-v">Responsável</label>
-              <span id="detalhe-responsavel" class="fw-bold d-block small"></span>
-              <div id="detalhe-responsavel-sub" class="small text-muted" style="font-size: 0.7rem;"></div>
+
+          <!-- PASSO 2 -->
+          <div
+            v-if="passo === 2"
+            class="form-step-enter"
+          >
+            <div class="mb-3">
+              <label class="label-v">
+                Nome Fantasia do Negócio
+              </label>
+
+              <input
+                v-model="form.nomeFantasia"
+                type="text"
+                class="form-control"
+              />
             </div>
-            <div class="col-6 ps-3 text-start">
-              <label class="label-v">Indicação / Ir.</label>
-              <span id="detalhe-irmao" class="fw-bold d-block small"></span>
-              <div id="detalhe-grau" class="small text-muted" style="font-size: 0.7rem;"></div>
+
+            <div class="mb-3">
+              <label class="label-v">
+                Categorias
+              </label>
+
+              <input
+                v-model="form.categorias"
+                type="text"
+                class="form-control"
+                placeholder="Ex: Fotografia, Advocacia"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="label-v">
+                WhatsApp
+              </label>
+
+              <input
+                v-model="form.whatsapp"
+                type="tel"
+                class="form-control"
+                placeholder="(00) 00000-0000"
+              />
+            </div>
+
+            <div class="mb-4">
+              <label class="label-v">
+                Logo / Foto (Quadrada)
+              </label>
+
+              <input
+                type="file"
+                class="form-control"
+                accept="image/*"
+                @change="converterImagem"
+              />
+            </div>
+
+            <div class="d-flex gap-2">
+              <button
+                class="btn btn-outline-secondary w-100 rounded-pill py-3"
+                @click="mudarPasso(1)"
+              >
+                Voltar
+              </button>
+
+              <button
+                class="btn btn-dark w-100 rounded-pill py-3"
+                @click="mudarPasso(3)"
+              >
+                Próximo
+              </button>
             </div>
           </div>
 
-          <div class="px-3">
-            <label class="label-v">Sobre o Negócio</label>
-            <p id="detalhe-descricao" class="text-secondary small" style="white-space: pre-line; line-height: 1.6;"></p>
+          <!-- PASSO 3 -->
+          <div
+            v-if="passo === 3"
+            class="form-step-enter"
+          >
+            <div class="mb-3">
+              <label class="label-v">
+                Descrição Curta
+              </label>
 
-            <div class="row mb-4">
-                <div class="col-6">
-                    <label class="label-v">Modalidade</label>
-                    <p id="detalhe-modalidade" class="small mb-0 fw-bold"><i class="fa fa-check-circle me-1 text-success"></i></p>
-                </div>
-                <div class="col-6">
-                    <label class="label-v">Onde Atende</label>
-                    <p id="detalhe-locais" class="small mb-0 fw-bold"><i class="fa fa-map-marker-alt me-1 text-danger"></i></p>
-                </div>
+              <textarea
+                v-model="form.descricao"
+                class="form-control"
+              ></textarea>
             </div>
 
-            <div id="detalhe-diferencial-box" class="alert alert-success border-0 shadow-sm mb-4 py-2 d-none">
-                <i class="fa fa-star me-2"></i> <strong class="small">Diferencial para Irmãos:</strong> <br>
-                <span id="detalhe-diferencial" class="small"></span>
+            <div class="mb-3">
+              <label class="label-v">
+                Abrangência de Atendimento
+              </label>
+
+              <input
+                v-model="form.locaisAtendimento"
+                type="text"
+                class="form-control"
+                placeholder="Cidades ou Estados"
+              />
             </div>
 
-            <div class="mt-5 pb-5">
-              <a id="btn-wpp" target="_blank" class="btn-acao shadow-sm" style="background:#25d366;">
-                <i class="fab fa-whatsapp me-2 fa-lg"></i> <span></span>
-              </a>
-              <a id="btn-insta" target="_blank" class="btn-acao shadow-sm" style="background:linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);">
-                <i class="fab fa-instagram me-2 fa-lg"></i> <span></span>
-              </a>
-              <a id="btn-site" target="_blank" class="btn-acao shadow-sm" style="background:#333;">
-                <i class="fa fa-globe me-2 fa-lg"></i> <span></span>
-              </a>
+            <div
+              class="
+                alert
+                alert-light
+                border
+                rounded-4
+                small
+                text-muted
+                mb-4
+              "
+            >
+              Ao enviar, seu cadastro passará por moderação. TFA!
+            </div>
+
+            <div class="d-flex gap-2">
+              <button
+                class="btn btn-outline-secondary w-100 rounded-pill py-3"
+                @click="mudarPasso(2)"
+              >
+                Voltar
+              </button>
+
+              <button
+                class="btn btn-success w-100 rounded-pill py-3 fw-bold"
+                @click="enviarFormulario"
+              >
+                Finalizar Cadastro
+              </button>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   </div>
 
-  <!-- TELA 3: CADASTRO -->
-  <div id="tela-cadastro" class="container py-4 d-none">
-    <div class="form-box text-start mx-2">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="fw-bold mb-0">Novo Cadastro</h5>
-            <button class="btn-close" onclick="roteamento('grid')"></button>
-        </div>
-
-        <div id="formulario-fluxo">
-            <div class="progress"><div id="barra-progresso" class="progress-bar bg-warning" style="width: 33.3%;"></div></div>
-
-            <!-- PASSO 1 -->
-            <div id="passo-1">
-                <label class="label-v">Nome do Irmão</label>
-                <input type="text" id="form-nomeIrmao" class="form-control mb-3" placeholder="Nome completo">
-                <label class="label-v">Grau</label>
-                <select id="form-grau" class="form-select mb-3">
-                    <option value="Aprendiz">Aprendiz</option>
-                    <option value="Companheiro">Companheiro</option>
-                    <option value="Mestre">Mestre</option>
-                </select>
-                <label class="label-v">Vínculo</label>
-                <select id="form-vinculo" class="form-select mb-3" onchange="toggleProprietaria()">
-                    <option value="Proprio">Negócio próprio</option>
-                    <option value="Companheira">Da esposa/companheira</option>
-                    <option value="Outro">De outro familiar</option>
-                </select>
-                <div id="box-proprietaria" class="d-none">
-                    <label class="label-v">Nome da Proprietária</label>
-                    <input type="text" id="form-nomeProprietaria" class="form-control mb-3">
-                </div>
-                <button class="btn btn-dark w-100 mt-3 rounded-pill" onclick="mudarPasso(2)">Próximo</button>
-            </div>
-
-            <!-- PASSO 2 -->
-            <div id="passo-2" class="d-none">
-                <label class="label-v">Nome Fantasia do Negócio</label>
-                <input type="text" id="form-nomeFantasia" class="form-control mb-3">
-                <label class="label-v">Categorias</label>
-                <input type="text" id="form-categorias" class="form-control mb-3" placeholder="Ex: Fotografia, Advocacia">
-                <label class="label-v">WhatsApp</label>
-                <input type="tel" id="form-whatsapp" class="form-control mb-3" placeholder="(00) 00000-0000">
-                <label class="label-v">Logo/Foto (Quadrada)</label>
-                <input type="file" id="form-file" class="form-control mb-4" accept="image/*" onchange="converterImagem(event)">
-                <div class="d-flex gap-2">
-                    <button class="btn btn-light border w-100 rounded-pill" onclick="mudarPasso(1)">Voltar</button>
-                    <button class="btn btn-dark w-100 rounded-pill" onclick="mudarPasso(3)">Próximo</button>
-                </div>
-            </div>
-
-            <!-- PASSO 3 -->
-            <div id="passo-3" class="d-none">
-                <label class="label-v">Descrição Curta</label>
-                <textarea id="form-descricao" class="form-control mb-3" rows="3"></textarea>
-                <label class="label-v">Abrangência de Atendimento</label>
-                <input type="text" id="form-locaisAtendimento" class="form-control mb-3" placeholder="Cidades ou Estados">
-                <div class="alert alert-light border small text-muted">Ao enviar, seu cadastro passará por moderação. TFA!</div>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-light border w-100 rounded-pill" onclick="mudarPasso(2)">Voltar</button>
-                    <button id="btnFinalizar" class="btn btn-success w-100 rounded-pill" onclick="enviarFormulario()">Finalizar Cadastro</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="formulario-sucesso" class="text-center py-5 d-none">
-            <i class="fa fa-check-circle fa-4x text-success mb-3"></i>
-            <h5 class="fw-bold">Cadastro Enviado!</h5>
-            <p class="text-muted small">Obrigado! Seus dados foram recebidos. TFA!</p>
-            <button class="btn btn-dark mt-3 px-5 rounded-pill" onclick="roteamento('grid')">Ir para o Catálogo</button>
-        </div>
-    </div>
-  </div>
-</div>
-
-<script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbw0Jw1-Wn7F21RTC7OprJ-ICoPW-xHq__nQM5V-KJl-hYNfq18Rgqmv5YFBUhpWG5Ml/exec';
-
-let estado = {
-  negocios: [],
-  loading: true,
-  busca: '',
-  categoriaSelecionada: '',
-  pagina: 1,
-  itensPag: 12
-};
-
-/**
- * CARREGAR DADOS
- */
-async function carregarDados() {
-
-  try {
-
-    document.getElementById('loader')
-      .classList.remove('d-none');
-
-    const response = await fetch(
-      `${API_URL}?t=${Date.now()}`,
-      {
-        method: 'GET',
-        mode: 'cors',
-        redirect: 'follow',
-        headers: {
-          'Accept': 'application/json'
-        }
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('Erro HTTP');
-    }
-
-    const json = await response.json();
-
-    console.log('API:', json);
-
-    if (!json.success) {
-      throw new Error(json.error || 'Erro API');
-    }
-
-    estado.negocios = json.data || [];
-
-    construirFiltroCategorias();
-
-    renderizarGrid();
-
-  } catch (err) {
-
-    console.error(err);
-
-    document.getElementById('loader').innerHTML = `
-      <div class="alert alert-danger rounded-4">
-        Erro ao carregar dados da API.
-      </div>
-    `;
-
-  } finally {
-
-    estado.loading = false;
-
-    document.getElementById('loader')
-      .classList.add('d-none');
-  }
-}
-
-/**
- * FILTRO CATEGORIAS
- */
-function construirFiltroCategorias() {
-
-  const select = document.getElementById('selectCategoria');
-
-  const categorias = new Set();
-
-  estado.negocios.forEach(item => {
-
-    if (!item.categorias) return;
-
-    item.categorias
-      .split(',')
-      .forEach(cat => categorias.add(cat.trim()));
-  });
-
-  select.innerHTML = `
-    <option value="">
-      Todas as áreas
-    </option>
-  `;
-
-  [...categorias]
-    .sort()
-    .forEach(cat => {
-
-      const option = document.createElement('option');
-
-      option.value = cat;
-      option.textContent = cat;
-
-      select.appendChild(option);
-    });
-}
-
-/**
- * GRID
- */
-function renderizarGrid() {
-
-  let dados = [...estado.negocios];
-
-  /**
-   * FILTRO CATEGORIA
-   */
-  if (estado.categoriaSelecionada) {
-
-    dados = dados.filter(item => {
-
-      return item.categorias &&
-        item.categorias.includes(
-          estado.categoriaSelecionada
-        );
-    });
-  }
-
-  /**
-   * BUSCA
-   */
-  if (estado.busca) {
-
-    const termo = estado.busca.toLowerCase();
-
-    dados = dados.filter(item => {
-
-      return (
-        (item.nomefantasia || '')
-          .toLowerCase()
-          .includes(termo)
-
-        ||
-
-        (item.nomeirmao || '')
-          .toLowerCase()
-          .includes(termo)
-
-        ||
-
-        (item.categorias || '')
-          .toLowerCase()
-          .includes(termo)
-      );
-    });
-  }
-
-  /**
-   * SEM RESULTADOS
-   */
-  const sem = document.getElementById('sem-resultados');
-
-  if (dados.length === 0) {
-
-    sem.classList.remove('d-none');
-
-    document.getElementById('grid-negocios')
-      .innerHTML = '';
-
-    return;
-  }
-
-  sem.classList.add('d-none');
-
-  /**
-   * PAGINAÇÃO
-   */
-  const inicio =
-    (estado.pagina - 1) * estado.itensPag;
-
-  const itens = dados.slice(
-    inicio,
-    inicio + estado.itensPag
-  );
-
-  const grid =
-    document.getElementById('grid-negocios');
-
-  grid.innerHTML = '';
-
-  itens.forEach(item => {
-
-    const foto =
-      item.urlfotologo ||
-      'https://via.placeholder.com/600x600?text=Sem+Imagem';
-
-    const categoria =
-      item.categorias
-        ? item.categorias.split(',')[0]
-        : '';
-
-    const div = document.createElement('div');
-
-    div.className = 'col';
-
-    div.innerHTML = `
-      <div class="card card-negocio h-100 shadow-sm">
-
-        <div class="img-box">
-
-          ${
-            categoria
-            ? `<span class="badge-cat">${categoria}</span>`
-            : ''
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          API_URL:
+            'https://script.google.com/macros/s/AKfycbw0Jw1-Wn7F21RTC7OprJ-ICoPW-xHq__nQM5V-KJl-hYNfq18Rgqmv5YFBUhpWG5Ml/exec',
+
+          tela: 'grid',
+
+          passo: 1,
+
+          cadastroSucesso: false,
+
+          detalhe: {},
+
+          categorias: [],
+
+          form: {
+            nomeIrmao: '',
+            grau: 'Aprendiz',
+            vinculo: 'Proprio',
+            nomeProprietaria: '',
+            nomeFantasia: '',
+            categorias: '',
+            whatsapp: '',
+            descricao: '',
+            locaisAtendimento: '',
+            imagemBase64: ''
+          },
+
+          estado: {
+            negocios: [],
+            loading: true,
+            busca: '',
+            categoriaSelecionada: '',
+            pagina: 1,
+            itensPag: 12
+          }
+        };
+      },
+
+      computed: {
+        negociosFiltrados() {
+          let dados = [...this.estado.negocios];
+
+          if (this.estado.categoriaSelecionada) {
+            dados = dados.filter(item => {
+              return (
+                item.categorias &&
+                item.categorias.includes(
+                  this.estado.categoriaSelecionada
+                )
+              );
+            });
           }
 
-          <img
-            loading="lazy"
-            src="${foto}"
-            alt="${item.nomefantasia}"
-          >
+          if (this.estado.busca) {
+            const termo =
+              this.estado.busca.toLowerCase();
 
-        </div>
+            dados = dados.filter(item => {
+              return (
+                (item.nomefantasia || '')
+                  .toLowerCase()
+                  .includes(termo)
 
-        <div class="card-body p-3">
+                ||
 
-          <h6
-            class="fw-bold text-uppercase mb-1"
-            style="
-              color:#1a2a3a;
-              font-size:.85rem;
-              min-height:2.5em;
-            "
-          >
-            ${item.nomefantasia || ''}
-          </h6>
+                (item.nomeirmao || '')
+                  .toLowerCase()
+                  .includes(termo)
 
-          <p class="small text-secondary mb-1">
-            <strong>
-              ${item.nomeirmao || ''}
-            </strong>
-          </p>
+                ||
 
-          <p class="small text-muted mb-0">
-            <i class="fa fa-map-marker-alt me-1"></i>
-            ${item.locaisatendimento || ''}
-          </p>
+                (item.categorias || '')
+                  .toLowerCase()
+                  .includes(termo)
+              );
+            });
+          }
 
-        </div>
-      </div>
-    `;
+          return dados;
+        },
 
-    div.querySelector('.card-negocio')
-      .addEventListener(
-        'click',
-        () => abrirDetalhes(item)
-      );
+        negociosPaginados() {
+          const inicio =
+            (this.estado.pagina - 1)
+            * this.estado.itensPag;
 
-    grid.appendChild(div);
-  });
-}
+          return this.negociosFiltrados.slice(
+            inicio,
+            inicio + this.estado.itensPag
+          );
+        },
 
-/**
- * DETALHES
- */
-function abrirDetalhes(item) {
+        progresso() {
+          if (this.passo === 1) return 33.3;
+          if (this.passo === 2) return 66.6;
+          return 100;
+        },
 
-  document.getElementById('detalhe-nome')
-    .textContent =
-      item.nomefantasia || '';
+        linkWhatsapp() {
+          if (!this.detalhe.whatsapp) {
+            return '#';
+          }
 
-  document.getElementById('detalhe-slogan')
-    .textContent =
-      item.slogan || '';
+          return `https://wa.me/55${this.detalhe.whatsapp.replace(/\D/g, '')}`;
+        }
+      },
 
-  document.getElementById('detalhe-img')
-    .src =
-      item.urlfotologo ||
-      'https://via.placeholder.com/600';
+      methods: {
+        async carregarDados() {
+          try {
+            this.estado.loading = true;
 
-  document.getElementById('detalhe-responsavel')
-    .textContent =
-      item.nomeproprietaria ||
-      item.nomeirmao ||
-      '';
+            const response = await fetch(
+              `${this.API_URL}?t=${Date.now()}`,
+              {
+                method: 'GET',
+                mode: 'cors',
+                redirect: 'follow',
+                headers: {
+                  Accept: 'application/json'
+                }
+              }
+            );
 
-  document.getElementById('detalhe-responsavel-sub')
-    .textContent =
-      item.vinculo || '';
+            if (!response.ok) {
+              throw new Error('Erro HTTP');
+            }
 
-  document.getElementById('detalhe-irmao')
-    .textContent =
-      item.nomeirmao || '';
+            const json = await response.json();
 
-  document.getElementById('detalhe-grau')
-    .textContent =
-      item.grau || '';
+            if (!json.success) {
+              throw new Error(
+                json.error || 'Erro API'
+              );
+            }
 
-  document.getElementById('detalhe-descricao')
-    .textContent =
-      item.descricao || '';
+            this.estado.negocios =
+              json.data || [];
 
-  document.getElementById('detalhe-modalidade')
-    .innerHTML =
-      `<i class="fa fa-check-circle me-1 text-success"></i>
-      ${item.modalidade || ''}`;
+            this.construirCategorias();
 
-  document.getElementById('detalhe-locais')
-    .innerHTML =
-      `<i class="fa fa-map-marker-alt me-1 text-danger"></i>
-      ${item.locaisatendimento || ''}`;
+          } catch (err) {
+            console.error(err);
 
-  /**
-   * LINKS
-   */
-  configurarBotao(
-    'btn-wpp',
-    item.whatsapp
-      ? `https://wa.me/55${item.whatsapp.replace(/\D/g,'')}`
-      : '',
-    'FALAR NO WHATSAPP',
-    'WHATSAPP INDISPONÍVEL'
-  );
+            alert(
+              'Erro ao carregar dados da API.'
+            );
 
-  configurarBotao(
-    'btn-insta',
-    item.instagram || '',
-    'VER INSTAGRAM',
-    'INSTAGRAM INDISPONÍVEL'
-  );
+          } finally {
+            this.estado.loading = false;
+          }
+        },
 
-  configurarBotao(
-    'btn-site',
-    item.site || '',
-    'VISITAR SITE',
-    'SITE INDISPONÍVEL'
-  );
+        construirCategorias() {
+          const categorias = new Set();
 
-  roteamento('detalhes');
-}
+          this.estado.negocios.forEach(item => {
+            if (!item.categorias) return;
 
-/**
- * BOTÕES
- */
-function configurarBotao(
-  id,
-  link,
-  ativo,
-  inativo
-) {
+            item.categorias
+              .split(',')
+              .forEach(cat => {
+                categorias.add(cat.trim());
+              });
+          });
 
-  const btn =
-    document.getElementById(id);
+          this.categorias = [...categorias]
+            .sort();
+        },
 
-  const span =
-    btn.querySelector('span');
+        abrirDetalhes(item) {
+          this.detalhe = item;
+          this.roteamento('detalhes');
+        },
 
-  if (link) {
+        roteamento(tela) {
+          this.tela = tela;
 
-    btn.href = link;
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        },
 
-    btn.classList.remove('disabled');
+        mudarPasso(passo) {
+          this.passo = passo;
+        },
 
-    span.textContent = ativo;
+        limparFiltros() {
+          this.estado.busca = '';
+          this.estado.categoriaSelecionada = '';
+        },
 
-  } else {
+        converterImagem(event) {
+          const file =
+            event.target.files[0];
 
-    btn.href = '#';
+          if (!file) return;
 
-    btn.classList.add('disabled');
+          const reader = new FileReader();
 
-    span.textContent = inativo;
-  }
-}
+          reader.onload = e => {
+            this.form.imagemBase64 =
+              e.target.result;
+          };
 
-/**
- * ROTEAMENTO
- */
-function roteamento(tela) {
+          reader.readAsDataURL(file);
+        },
 
-  document
-    .getElementById('tela-grid')
-    .classList.add('d-none');
+        async enviarFormulario() {
+          try {
+            const payload = {
+              ...this.form
+            };
 
-  document
-    .getElementById('tela-detalhes')
-    .classList.add('d-none');
+            console.log(
+              'Enviando:',
+              payload
+            );
 
-  document
-    .getElementById('tela-cadastro')
-    .classList.add('d-none');
+            this.cadastroSucesso = true;
 
-  if (tela === 'grid') {
+          } catch (err) {
+            console.error(err);
 
-    document
-      .getElementById('tela-grid')
-      .classList.remove('d-none');
-  }
+            alert(
+              'Erro ao enviar formulário.'
+            );
+          }
+        }
+      },
 
-  if (tela === 'detalhes') {
-
-    document
-      .getElementById('tela-detalhes')
-      .classList.remove('d-none');
-  }
-
-  if (tela === 'cadastro') {
-
-    document
-      .getElementById('tela-cadastro')
-      .classList.remove('d-none');
-  }
-
-  window.scrollTo(0,0);
-}
-
-/**
- * EVENTOS
- */
-document
-  .getElementById('inputBusca')
-  .addEventListener('input', e => {
-
-    estado.busca = e.target.value;
-
-    estado.pagina = 1;
-
-    renderizarGrid();
-  });
-
-document
-  .getElementById('selectCategoria')
-  .addEventListener('change', e => {
-
-    estado.categoriaSelecionada =
-      e.target.value;
-
-    estado.pagina = 1;
-
-    renderizarGrid();
-  });
-
-/**
- * INIT
- */
-carregarDados();
-</script>
+      mounted() {
+        this.carregarDados();
+      }
+    }).mount('#app');
+  </script>
 </body>
 </html>
