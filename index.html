@@ -261,6 +261,25 @@
       resize: none;
     }
 
+    .badge {
+      padding: 8px 12px !important;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-flex !important;
+      align-items: center;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .badge .btn-close {
+      cursor: pointer;
+      opacity: 0.7;
+      transition: 0.2s ease;
+    }
+
+    .badge .btn-close:hover {
+      opacity: 1;
+    }
+
     /* RESPONSIVO */
     @media (max-width: 576px) {
       .navbar-brand-custom {
@@ -553,8 +572,51 @@
             </div>
 
             <div class="mb-3">
-              <label class="label-v">Categorias</label>
-              <input v-model="form.categorias" type="text" class="form-control" placeholder="Ex: Fotografia, Advocacia">
+              <label class="label-v">Área de Atuação</label>
+              <div class="d-flex gap-2 mb-2">
+                <select v-model="novaCategoria" class="form-select">
+                  <option value="">Selecione uma categoria</option>
+                  <option value="Advocacia">Advocacia</option>
+                  <option value="Contabilidade">Contabilidade</option>
+                  <option value="Consultoria">Consultoria</option>
+                  <option value="Engenharia">Engenharia</option>
+                  <option value="Fotografia">Fotografia</option>
+                  <option value="Gastronomia">Gastronomia</option>
+                  <option value="Imobiliário">Imobiliário</option>
+                  <option value="Informática">Informática</option>
+                  <option value="Logística">Logística</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Medicina">Medicina</option>
+                  <option value="Odontologia">Odontologia</option>
+                  <option value="Psicologia">Psicologia</option>
+                  <option value="Segurança">Segurança</option>
+                  <option value="Terapia">Terapia</option>
+                  <option value="Varejo">Varejo</option>
+                  <option value="Outro">Outro (especificar)</option>
+                </select>
+                <button type="button" class="btn btn-primary rounded-pill px-4" @click="adicionarCategoria" :disabled="!novaCategoria">
+                  <i class="fa fa-plus me-1"></i> Adicionar
+                </button>
+              </div>
+
+              <!-- Campo para categoria personalizada -->
+              <div v-if="novaCategoria === 'Outro'" class="mb-3">
+                <input v-model="categoriaPersonalizada" type="text" class="form-control" placeholder="Digite a categoria personalizada">
+                <small class="text-muted d-block mt-1">Ex: Restauração de Móveis, Design de Interiores</small>
+              </div>
+
+              <!-- Tags das categorias selecionadas -->
+              <div v-if="form.categorias" class="d-flex flex-wrap gap-2 mb-3">
+                <span v-for="(cat, idx) in form.categorias.split(',').filter(c => c.trim())" :key="idx" class="badge bg-warning text-dark">
+                  {{ cat.trim() }}
+                  <button type="button" class="btn-close btn-close-white ms-2" @click="removerCategoria(idx)" style="font-size: 0.65rem;"></button>
+                </span>
+              </div>
+
+              <div v-if="!form.categorias" class="alert alert-light border rounded-3 small text-muted mb-0">
+                <i class="fa fa-info-circle me-2"></i>
+                Selecione pelo menos uma área de atuação
+              </div>
             </div>
 
             <div class="mb-3">
@@ -646,6 +708,8 @@
           passo: 1,
           cadastroSucesso: false,
           enviando: false,
+          novaCategoria: '',
+          categoriaPersonalizada: '',
           detalhe: {},
           categorias: [],
           form: {
@@ -773,11 +837,58 @@
 
         mudarPasso(passo) {
           this.passo = passo;
+          // Resetar inputs de categoria
+          if (passo !== 2) {
+            this.novaCategoria = '';
+            this.categoriaPersonalizada = '';
+          }
         },
 
         limparFiltros() {
           this.estado.busca = '';
           this.estado.categoriaSelecionada = '';
+        },
+
+        adicionarCategoria() {
+          if (!this.novaCategoria) {
+            alert('Selecione uma categoria');
+            return;
+          }
+
+          let novaCategoria = this.novaCategoria;
+
+          // Se for "Outro", usar o valor personalizado
+          if (this.novaCategoria === 'Outro') {
+            if (!this.categoriaPersonalizada.trim()) {
+              alert('Digite a categoria personalizada');
+              return;
+            }
+            novaCategoria = this.categoriaPersonalizada.trim();
+          }
+
+          // Evitar duplicatas
+          const categoriasAtuais = this.form.categorias.split(',').map(c => c.trim()).filter(c => c);
+          if (categoriasAtuais.includes(novaCategoria)) {
+            alert('Esta categoria já foi adicionada');
+            return;
+          }
+
+          // Adicionar à lista
+          if (this.form.categorias.trim()) {
+            this.form.categorias += ', ' + novaCategoria;
+          } else {
+            this.form.categorias = novaCategoria;
+          }
+
+          // Resetar inputs
+          this.novaCategoria = '';
+          this.categoriaPersonalizada = '';
+        },
+
+        removerCategoria(idx) {
+          const categorias = this.form.categorias.split(',').map(c => c.trim()).filter(c => c);
+          categorias.splice(idx, 1);
+          this.form.categorias = categorias.join(', ');
         },
 
         converterImagem(event) {
@@ -856,6 +967,8 @@
                 urlfotologo: ''
               };
               this.passo = 1;
+              this.novaCategoria = '';
+              this.categoriaPersonalizada = '';
             } else {
               throw new Error(result.error || 'Erro ao enviar cadastro');
             }
