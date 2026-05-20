@@ -1,51 +1,49 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Catálogo de Negócios Maçonaria Sergipe</title>
-  
-  <!-- Bootstrap 5.3 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome 6 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <!-- Vue 3 -->
+
+  <!-- Estilos: Bootstrap + FontAwesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 
   <style>
-    :root { --primary-dark: #1a2a3a; --gold: #ffc107; --bg: #f4f6f9; }
-    body { background-color: var(--bg); font-family: 'Segoe UI', system-ui, sans-serif; overflow-x: hidden; }
+    :root { --dark: #182434; --gold: #ffc107; --bg: #f4f6f9; }
+    body { background: var(--bg); font-family: "Segoe UI", system-ui, sans-serif; overflow-x: hidden; color: #1f2937; }
     [v-cloak] { display: none; }
 
-    /* NAVBAR */
+    /* NAVBAR SPA */
     .navbar-custom { background: linear-gradient(135deg, #182434, #24364d); }
-    .navbar-brand { font-size: 0.95rem; line-height: 1.2; white-space: normal; max-width: 200px; cursor: pointer; }
-    .btn-cadastrar { background: var(--gold); color: #1a2a3a; font-weight: bold; border: none; border-radius: 20px; padding: 6px 18px; font-size: 0.85rem; transition: 0.3s; }
-    .btn-cadastrar:hover { background: #e0a800; transform: translateY(-2px); }
+    .navbar-brand-custom { font-size: 0.95rem; line-height: 1.2; max-width: 220px; cursor: pointer; color: white !important; }
+    .btn-cadastrar { background: var(--gold); color: #1a2a3a; font-weight: 700; border: none; border-radius: 999px; padding: 8px 18px; font-size: 0.85rem; transition: 0.25s ease; box-shadow: 0 10px 25px rgba(255, 193, 7, 0.2); }
+    .btn-cadastrar:hover { transform: translateY(-2px); background: #ffca2c; }
 
     /* GRID & CARDS */
-    .filter-section { background: white; border-radius: 18px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid rgba(0,0,0,0.05); }
-    .label-v { color: #888; font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: block; }
-    .card-negocio { border: none; border-radius: 18px; cursor: pointer; transition: 0.3s ease; background: white; height: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.06); overflow: hidden; }
-    .card-negocio:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
-    .img-box { width: 100%; aspect-ratio: 1 / 1; position: relative; overflow: hidden; background: #eee; }
+    .filter-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 25px; }
+    .label-v { color: #6b7280; font-weight: 800; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+    .card-negocio { border: none; border-radius: 18px; overflow: hidden; transition: 0.3s ease; background: white; cursor: pointer; height: 100%; box-shadow: 0 5px 20px rgba(0,0,0,0.06); }
+    .card-negocio:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+    .img-box { width: 100%; aspect-ratio: 1 / 1; overflow: hidden; position: relative; background: #e5e7eb; }
     .img-box img { width: 100%; height: 100%; object-fit: cover; }
-    .badge-cat { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.75); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.65rem; font-weight: bold; z-index: 2; backdrop-filter: blur(4px); }
-    
-    /* DETALHES */
-    .detail-bg { background: linear-gradient(135deg, #182434, #24364d); padding: 50px 0 100px; text-align: center; color: white; }
-    .img-detail-wrapper { width: 170px; height: 170px; margin: -85px auto 0; position: relative; z-index: 10; }
-    .img-detail-wrapper img { width: 100%; height: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 22px; border: 5px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.15); background: white; }
-    .detail-content { background: white; border-radius: 30px 30px 0 0; min-height: 100vh; padding-top: 50px; }
-    
-    /* BOTÕES AÇÃO */
-    .btn-acao { border-radius: 15px; padding: 16px; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none !important; color: white; transition: 0.2s; font-size: 0.9rem; }
-    .btn-acao:not(.disabled):active { transform: scale(0.96); }
-    .btn-acao.disabled { background: #e9ecef !important; color: #adb5bd !important; cursor: not-allowed; pointer-events: none; box-shadow: none; }
+    .badge-cat { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.8); color: white; padding: 5px 12px; border-radius: 999px; font-size: 0.6rem; font-weight: 700; backdrop-filter: blur(8px); }
 
-    /* FORMULÁRIO */
-    .form-box { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); max-width: 600px; margin: auto; }
-    .progress { height: 8px; border-radius: 10px; margin-bottom: 25px; background: #e9ecef; }
+    /* DETALHES */
+    .detail-bg { background: linear-gradient(135deg, #182434, #24364d); padding: 50px 0 110px; text-align: center; color: white; }
+    .img-detail-wrapper { width: 170px; height: 170px; margin: -85px auto 0; position: relative; z-index: 10; }
+    .img-detail-wrapper img { width: 100%; height: 100%; object-fit: cover; border-radius: 24px; border: 5px solid white; background: white; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .detail-content { background: white; border-radius: 30px 30px 0 0; min-height: 100vh; padding-top: 40px; }
+    .info-card { background: #f8fafc; border-radius: 20px; padding: 20px; border: 1px solid #e5e7eb; }
+
+    /* BOTÕES AÇÃO */
+    .btn-acao { border-radius: 18px; padding: 15px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; justify-content: center; text-decoration: none !important; color: white; transition: 0.2s ease; font-size: 0.9rem; min-height: 58px; }
+    .btn-acao.disabled { background: #e5e7eb !important; color: #9ca3af !important; pointer-events: none; }
+    
+    /* FORM */
+    .form-box { background: white; border-radius: 24px; padding: 24px; box-shadow: 0 10px 35px rgba(0,0,0,0.06); max-width: 600px; margin: auto; }
+    .progress { height: 8px; border-radius: 999px; background: #e5e7eb; }
   </style>
 </head>
 <body>
@@ -53,216 +51,170 @@
 <div id="app" v-cloak>
   
   <!-- NAVBAR -->
-  <nav class="navbar navbar-dark navbar-custom sticky-top shadow">
-    <div class="container d-flex justify-content-between align-items-center">
-      <span class="navbar-brand fw-bold" @click="irParaGrid">
+  <nav class="navbar navbar-dark navbar-custom sticky-top shadow-sm">
+    <div class="container">
+      <div class="navbar-brand navbar-brand-custom fw-bold" @click="irParaGrid">
         Catálogo de Negócios <br><small class="opacity-75">Maçonaria Sergipe</small>
-      </span>
-      <button v-if="view === 'grid'" class="btn-cadastrar" @click="view = 'cadastro'">
+      </div>
+      <button v-if="tela === 'grid'" class="btn-cadastrar shadow-sm" @click="tela = 'cadastro'">
         <i class="fa fa-plus-circle me-1"></i> Cadastrar
       </button>
     </div>
   </nav>
 
-  <!-- TELA 1: GRID / CATALOGO -->
-  <div v-if="view === 'grid'" class="container py-4">
-    
-    <!-- Filtros -->
-    <div class="filter-section text-start mx-1">
-        <div class="row g-3">
-          <div class="col-12 col-md-7">
-            <label class="label-v">O que você procura?</label>
-            <input type="text" class="form-control" placeholder="Negócio, área ou irmão..." v-model="busca" @input="pagina = 1">
-          </div>
-          <div class="col-12 col-md-5">
-            <label class="label-v">Área de Atuação</label>
-            <select class="form-select" v-model="categoriaSelecionada" @change="pagina = 1">
-              <option value="">Todas as áreas</option>
-              <option v-for="cat in listaCategorias" :key="cat" :value="cat">{{ cat }}</option>
-            </select>
+  <!-- TELA 1: GRID -->
+  <section v-if="tela === 'grid'" class="container py-4">
+    <div class="filter-card mb-4">
+      <div class="row g-3 text-start">
+        <div class="col-12 col-lg-8">
+          <label class="label-v">Buscar</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="fa fa-search text-muted"></i></span>
+            <input type="text" v-model="estado.busca" class="form-control border-start-0" placeholder="Nome, área ou irmão...">
           </div>
         </div>
-    </div>
-
-    <!-- Loader -->
-    <div v-if="loading" class="text-center py-5">
-      <div class="spinner-border text-warning" role="status"></div>
-      <p class="mt-3 text-muted small fw-bold">Sincronizando com a Planilha...</p>
-    </div>
-
-    <!-- Sem Resultados -->
-    <div v-else-if="filtrados.length === 0" class="text-center py-5">
-      <i class="fa fa-search-minus fa-3x text-muted mb-3"></i>
-      <p class="text-muted">Nenhum resultado encontrado.</p>
-      <button class="btn btn-link btn-sm" @click="limparFiltros">Limpar filtros</button>
-    </div>
-
-    <!-- Grid de Cards -->
-    <div v-else class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 text-start mx-1">
-      <div v-for="n in paginados" :key="n.id" class="col">
-        <div class="card card-negocio" @click="verDetalhes(n)">
-          <div class="img-box">
-            <span class="badge-cat" v-if="n.categorias">{{ n.categorias.split(',')[0] }}</span>
-            <img :src="n.urlfotologo || n.urlfoto || 'https://via.placeholder.com/500x500?text=Sem+Foto'" loading="lazy">
-          </div>
-          <div class="card-body p-3">
-            <h6 class="fw-bold text-uppercase mb-1" style="color: #1a2a3a; font-size: 0.88rem; min-height: 2.6em;">{{ n.nomefantasia }}</h6>
-            <p class="mb-1 small text-dark fw-semibold text-truncate">{{ n.nomeirmao }}</p>
-            <p class="text-muted small mb-0"><i class="fa fa-location-dot me-1"></i> {{ n.locaisatendimento }}</p>
-          </div>
+        <div class="col-12 col-lg-4">
+          <label class="label-v">Área de Atuação</label>
+          <select v-model="estado.categoriaSelecionada" class="form-select">
+            <option value="">Todas as áreas</option>
+            <option v-for="cat in categorias" :key="cat" :value="cat">{{ cat }}</option>
+          </select>
         </div>
       </div>
     </div>
 
-    <!-- Paginação -->
-    <nav v-if="totalPaginas > 1" class="mt-5">
-      <ul class="pagination pagination-sm justify-content-center">
-        <li v-for="p in totalPaginas" :class="['page-item', {active: pagina === p}]">
-          <a class="page-link shadow-sm" href="#" @click.prevent="pagina = p">{{ p }}</a>
-        </li>
-      </ul>
-    </nav>
-  </div>
+    <div v-if="estado.loading" class="text-center py-5">
+      <div class="spinner-border text-warning" role="status"></div>
+      <p class="mt-3 text-muted fw-semibold small">Sincronizando com a Planilha...</p>
+    </div>
+
+    <div v-else-if="negociosFiltrados.length === 0" class="text-center py-5">
+      <i class="fa fa-search-minus fa-3x text-secondary mb-3"></i>
+      <p class="text-muted">Nenhum resultado encontrado.</p>
+      <button class="btn btn-outline-dark rounded-pill px-4" @click="limparFiltros">Limpar Filtros</button>
+    </div>
+
+    <div v-else class="row g-4 text-start">
+      <div v-for="item in negociosPaginados" :key="item.id" class="col-12 col-sm-6 col-md-4 col-xl-3">
+        <div class="card-negocio" @click="abrirDetalhes(item)">
+          <div class="img-box">
+            <span v-if="item.categorias" class="badge-cat">{{ item.categorias.split(',')[0] }}</span>
+            <img :src="item.urlfotologo || item.urlfoto || 'https://via.placeholder.com/600x600?text=Sem+Foto'" loading="lazy">
+          </div>
+          <div class="p-3">
+            <h6 class="fw-bold text-uppercase mb-2" style="color:#182434; min-height: 44px; font-size: .88rem;">{{ item.nomefantasia }}</h6>
+            <p class="small mb-1 text-dark fw-semibold text-truncate">{{ item.nomeirmao }}</p>
+            <p class="small text-muted mb-0"><i class="fa fa-location-dot me-1"></i> {{ item.locaisatendimento }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- TELA 2: DETALHES -->
-  <div v-if="view === 'detalhes' && selec">
+  <section v-if="tela === 'detalhes' && detalhe">
     <div class="detail-bg px-3">
-        <h2 class="fw-bold text-uppercase mb-2">{{ selec.nomefantasia }}</h2>
-        <p class="fst-italic opacity-75 small mb-0">{{ selec.slogan }}</p>
+      <div class="container">
+        <h2 class="fw-bold text-uppercase mb-2">{{ detalhe.nomefantasia }}</h2>
+        <p class="opacity-75 fst-italic small mb-0">{{ detalhe.slogan }}</p>
+      </div>
     </div>
     <div class="img-detail-wrapper">
-        <img :src="selec.urlfotologo || selec.urlfoto">
+      <img :src="detalhe.urlfotologo || detalhe.urlfoto" alt="Logo">
     </div>
-    <div class="container detail-content text-start px-4">
-      <div class="row justify-content-center">
-        <div class="col-lg-8">
-          <div class="text-center mb-4"><button class="btn btn-light btn-sm rounded-pill px-4 border shadow-sm" @click="view = 'grid'">Voltar ao Catálogo</button></div>
-          
-          <div class="row mb-4 bg-light p-3 rounded-4 mx-0 shadow-sm border">
-            <div class="col-6 border-end">
-              <label class="label-v">Responsável</label>
-              <span class="fw-bold d-block">{{ selec.vinculo.toLowerCase() === 'proprio' ? selec.nomeirmao : (selec.nomeproprietaria || selec.nomecompanheira) }}</span>
-              <div class="small text-muted">{{ selec.vinculo.toLowerCase() === 'proprio' ? selec.grau : 'Proprietária' }}</div>
+    <div class="detail-content text-start">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <div class="text-center mb-4">
+              <button class="btn btn-light border rounded-pill px-4 shadow-sm" @click="tela = 'grid'">
+                <i class="fa fa-arrow-left me-2"></i> Voltar ao Catálogo
+              </button>
             </div>
-            <div class="col-6 ps-3 text-start">
-              <label class="label-v">Indicação</label>
-              <span class="fw-bold d-block">Ir. {{ selec.nomeirmao }}</span>
-              <div class="small text-muted">{{ selec.grau }}</div>
-            </div>
-          </div>
-
-          <div class="px-1">
-            <label class="label-v">Sobre o Negócio</label>
-            <p class="text-secondary small" style="white-space: pre-line; line-height: 1.7;">{{ selec.descricao }}</p>
-
-            <div class="row mb-4 g-3">
-                <div class="col-6">
-                    <label class="label-v">Modalidade</label>
-                    <p class="small mb-0 fw-bold"><i class="fa fa-circle-check me-1 text-success"></i> {{ selec.modalidade }}</p>
+            <div class="info-card mb-4">
+              <div class="row g-3">
+                <div class="col-6 border-end">
+                  <label class="label-v">Responsável</label>
+                  <div class="fw-bold small">{{ (detalhe.vinculo && detalhe.vinculo.toLowerCase() === 'proprio') ? detalhe.nomeirmao : (detalhe.nomeproprietaria || detalhe.nomecompanheira) }}</div>
+                  <div class="small text-muted">{{ (detalhe.vinculo && detalhe.vinculo.toLowerCase() === 'proprio') ? detalhe.grau : 'Proprietária' }}</div>
                 </div>
-                <div class="col-6">
-                    <label class="label-v">Onde Atende</label>
-                    <p class="small mb-0 fw-bold"><i class="fa fa-location-dot me-1 text-danger"></i> {{ selec.locaisatendimento }}</p>
+                <div class="col-6 ps-3">
+                  <label class="label-v">Indicação / Ir.</label>
+                  <div class="fw-bold small">Ir. {{ detalhe.nomeirmao }}</div>
+                  <div class="small text-muted">{{ detalhe.grau }}</div>
                 </div>
+              </div>
             </div>
-
-            <div v-if="selec.diferencial" class="alert alert-success border-0 shadow-sm mb-4">
-                <i class="fa fa-star me-1 text-warning"></i> <strong class="small">Diferencial para Irmãos:</strong> <br>
-                <span class="small">{{ selec.diferencial }}</span>
-            </div>
-
-            <div class="mt-5 pb-5">
-              <a :href="getWpp(selec.whatsapp)" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !selec.whatsapp }" style="background:#25d366;">
-                <i class="fab fa-whatsapp me-2 fa-lg"></i> {{ selec.whatsapp ? 'FALAR NO WHATSAPP' : 'WHATSAPP INDISPONÍVEL' }}
-              </a>
-              <a :href="getInsta(selec.instagram)" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !selec.instagram }" style="background:linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);">
-                <i class="fab fa-instagram me-2 fa-lg"></i> {{ selec.instagram ? 'VER INSTAGRAM' : 'INSTAGRAM INDISPONÍVEL' }}
-              </a>
-              <a :href="selec.site" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !selec.site }" style="background:#1f2937;">
-                <i class="fa fa-globe me-2 fa-lg"></i> {{ selec.site ? 'VISITAR SITE' : 'SITE INDISPONÍVEL' }}
-              </a>
+            <div class="px-lg-3">
+              <label class="label-v">Sobre o Negócio</label>
+              <p class="text-secondary small" style="white-space: pre-line; line-height: 1.8;">{{ detalhe.descricao }}</p>
+              <div class="row mb-4">
+                <div class="col-6"><label class="label-v">Modalidade</label><p class="small fw-bold"><i class="fa fa-check-circle text-success me-1"></i> {{ detalhe.modalidade }}</p></div>
+                <div class="col-6"><label class="label-v">Abrangência</label><p class="small fw-bold"><i class="fa fa-location-dot text-danger me-1"></i> {{ detalhe.locaisatendimento }}</p></div>
+              </div>
+              <div v-if="detalhe.diferencial" class="alert alert-success border-0 shadow-sm rounded-4"><i class="fa fa-star me-2"></i><strong class="small">Diferencial para Irmãos:</strong><br><span class="small">{{ detalhe.diferencial }}</span></div>
+              <div class="mt-5 pb-5">
+                <a :href="getWpp(detalhe.whatsapp)" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !detalhe.whatsapp }" style="background:#25d366;"><i class="fab fa-whatsapp me-2 fa-lg"></i> WHATSAPP COMERCIAL</a>
+                <a :href="getInsta(detalhe.instagram)" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !detalhe.instagram }" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);"><i class="fab fa-instagram me-2 fa-lg"></i> INSTAGRAM</a>
+                <a :href="detalhe.site" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !detalhe.site }" style="background:#1f2937;"><i class="fa fa-globe me-2 fa-lg"></i> VISITAR SITE</a>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- TELA 3: CADASTRO -->
-  <div v-if="view === 'cadastro'" class="container py-4">
-    <div class="form-box text-start">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="fw-bold mb-0">Novo Cadastro</h5>
-            <button class="btn-close" @click="irParaGrid"></button>
+  <section v-if="tela === 'cadastro'" class="container py-4">
+    <div class="form-box">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0">Novo Cadastro</h4>
+        <button class="btn-close" @click="irParaGrid"></button>
+      </div>
+      <div v-if="cadastroSucesso" class="text-center py-5">
+        <i class="fa fa-circle-check fa-4x text-success mb-3"></i>
+        <h5 class="fw-bold">Cadastro Enviado!</h5>
+        <p class="text-muted small">Os dados serão analisados. TFA!</p>
+        <button class="btn btn-dark rounded-pill px-5 mt-3" @click="irParaGrid">Voltar</button>
+      </div>
+      <div v-else>
+        <div class="progress mb-4"><div class="progress-bar bg-warning" :style="{ width: (passo * 33.3) + '%' }"></div></div>
+        
+        <div v-if="passo === 1">
+          <label class="label-v">Nome do Irmão</label>
+          <input type="text" v-model="form.nomeIrmao" class="form-control mb-3" placeholder="Nome completo">
+          <label class="label-v">Grau</label>
+          <select v-model="form.grau" class="form-select mb-3"><option value="Aprendiz">Aprendiz</option><option value="Companheiro">Companheiro</option><option value="Mestre">Mestre</option></select>
+          <label class="label-v">Vínculo</label>
+          <select v-model="form.vinculo" class="form-select mb-3"><option value="Proprio">Negócio próprio</option><option value="Companheira">Da esposa/companheira</option><option value="Outro">De outro familiar</option></select>
+          <div v-if="form.vinculo !== 'Proprio'"><label class="label-v">Nome da Proprietária</label><input type="text" v-model="form.nomeProprietaria" class="form-control mb-3"></div>
+          <button class="btn btn-dark w-100 rounded-pill py-3 mt-3" @click="passo = 2" :disabled="!form.nomeIrmao">Próximo</button>
         </div>
 
-        <div v-if="!formEnviado">
-            <div class="progress"><div class="progress-bar bg-warning" :style="{width: (step * 33.3) + '%'}"></div></div>
-
-            <!-- PASSO 1 -->
-            <div v-if="step === 1">
-                <label class="label-v">Nome do Irmão</label>
-                <input type="text" v-model="form.nomeIrmao" class="form-control mb-3" placeholder="Nome completo">
-                <label class="label-v">Grau</label>
-                <select v-model="form.grau" class="form-select mb-3">
-                    <option value="Aprendiz">Aprendiz</option>
-                    <option value="Companheiro">Companheiro</option>
-                    <option value="Mestre">Mestre</option>
-                </select>
-                <label class="label-v">Vínculo com o Negócio</label>
-                <select v-model="form.vinculo" class="form-select mb-3">
-                    <option value="Proprio">Negócio próprio</option>
-                    <option value="Companheira">Da esposa/companheira</option>
-                    <option value="Outro">De outro familiar</option>
-                </select>
-                <div v-if="form.vinculo !== 'Proprio'">
-                    <label class="label-v">Nome da Proprietária</label>
-                    <input type="text" v-model="form.nomeProprietaria" class="form-control mb-3">
-                </div>
-                <button class="btn btn-dark w-100 mt-3 rounded-pill py-3" @click="step = 2" :disabled="!form.nomeIrmao">Próximo Passo</button>
-            </div>
-
-            <!-- PASSO 2 -->
-            <div v-if="step === 2">
-                <label class="label-v">Nome Fantasia do Negócio</label>
-                <input type="text" v-model="form.nomeFantasia" class="form-control mb-3">
-                <label class="label-v">Áreas de Atuação</label>
-                <input type="text" v-model="form.categorias" class="form-control mb-3" placeholder="Ex: Fotografia, Advocacia">
-                <label class="label-v">WhatsApp</label>
-                <input type="tel" v-model="form.whatsapp" class="form-control mb-3" placeholder="(00) 00000-0000">
-                <label class="label-v">Logo ou Foto (Quadrada)</label>
-                <input type="file" @change="handleFile" class="form-control mb-4" accept="image/*">
-                <div class="d-flex gap-2">
-                    <button class="btn btn-outline-secondary w-100 rounded-pill" @click="step = 1">Voltar</button>
-                    <button class="btn btn-dark w-100 rounded-pill" @click="step = 3" :disabled="!form.nomeFantasia">Próximo</button>
-                </div>
-            </div>
-
-            <!-- PASSO 3 -->
-            <div v-if="step === 3">
-                <label class="label-v">Descrição dos Serviços</label>
-                <textarea v-model="form.descricao" class="form-control mb-3" rows="3"></textarea>
-                <label class="label-v">Abrangência de Atendimento</label>
-                <input type="text" v-model="form.locaisAtendimento" class="form-control mb-3" placeholder="Cidades ou Estados">
-                <div class="alert alert-light border small text-muted">Ao enviar, seu cadastro passará por moderação. TFA!</div>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-outline-secondary w-100 rounded-pill" @click="step = 2">Voltar</button>
-                    <button class="btn btn-success w-100 rounded-pill py-3 fw-bold" @click="enviarForm" :disabled="submitting">
-                        {{ submitting ? 'Enviando...' : 'Finalizar Cadastro' }}
-                    </button>
-                </div>
-            </div>
+        <div v-if="passo === 2">
+          <label class="label-v">Nome Fantasia do Negócio</label>
+          <input type="text" v-model="form.nomeFantasia" class="form-control mb-3">
+          <label class="label-v">Categorias</label>
+          <input type="text" v-model="form.categorias" class="form-control mb-3" placeholder="Ex: Fotografia, Advocacia">
+          <label class="label-v">WhatsApp</label>
+          <input type="tel" v-model="form.whatsapp" class="form-control mb-3" placeholder="(00) 00000-0000">
+          <label class="label-v">Logo (Quadrada)</label>
+          <input type="file" class="form-control mb-4" accept="image/*" @change="converterImagem">
+          <div class="d-flex gap-2"><button class="btn btn-outline-secondary w-100 rounded-pill py-3" @click="passo = 1">Voltar</button><button class="btn btn-dark w-100 rounded-pill py-3" @click="passo = 3" :disabled="!form.nomeFantasia">Próximo</button></div>
         </div>
 
-        <div v-else class="text-center py-5">
-            <i class="fa fa-circle-check fa-4x text-success mb-3"></i>
-            <h4 class="fw-bold">Cadastro Enviado!</h4>
-            <p class="text-muted">Os dados foram recebidos e serão analisados. TFA!</p>
-            <button class="btn btn-dark mt-3 px-5 rounded-pill" @click="irParaGrid">Voltar ao Catálogo</button>
+        <div v-if="passo === 3">
+          <label class="label-v">Descrição Curta</label>
+          <textarea v-model="form.descricao" class="form-control mb-3" placeholder="O que sua empresa faz?"></textarea>
+          <label class="label-v">Locais de Atendimento</label>
+          <input type="text" v-model="form.locaisAtendimento" class="form-control mb-3" placeholder="Cidades ou Estados">
+          <div class="alert alert-light border small text-muted mb-4">Análise prévia para publicação.</div>
+          <div class="d-flex gap-2"><button class="btn btn-outline-secondary w-100 rounded-pill py-3" @click="passo = 2">Voltar</button><button class="btn btn-success w-100 rounded-pill py-3 fw-bold" @click="enviarFormulario" :disabled="submitting">{{ submitting ? 'Enviando...' : 'Finalizar' }}</button></div>
         </div>
+      </div>
     </div>
-  </div>
-
+  </section>
 </div>
 
 <script>
@@ -271,82 +223,79 @@
     data() {
       return {
         API_URL: 'https://script.google.com/macros/s/AKfycbxFRcaIk838QmPAAKdb3oHTc0hJdj48j02Mi_AWETDsKe-hPydWha_SrMjo17Pfwewr/exec',
-        view: 'grid', loading: true, negocios: [], selec: null,
-        busca: '', categoriaSelecionada: '', pagina: 1, itensPag: 12,
-        step: 1, formEnviado: false, submitting: false,
-        form: { nomeIrmao: '', grau: 'Aprendiz', vinculo: 'Proprio', nomeProprietaria: '', nomeFantasia: '', categorias: '', whatsapp: '', fileData: '', descricao: '', locaisAtendimento: '', modalidade: 'Presencial', email: 'contato@catalogo.com' }
-      }
+        tela: 'grid', passo: 1, cadastroSucesso: false, submitting: false, detalhe: null, categorias: [],
+        form: { nomeIrmao: '', grau: 'Aprendiz', vinculo: 'Proprio', nomeProprietaria: '', nomeFantasia: '', categorias: '', whatsapp: '', descricao: '', locaisAtendimento: '', fileData: '', modalidade: 'Presencial', email: 'contato@catalogo.com' },
+        estado: { negocios: [], loading: true, busca: '', categoriaSelecionada: '', pagina: 1, itensPag: 12 }
+      };
     },
     computed: {
-      listaCategorias() {
-        const cats = new Set();
-        this.negocios.forEach(n => { if(n.categorias) n.categorias.split(',').forEach(c => cats.add(c.trim())); });
-        return Array.from(cats).sort();
-      },
-      filtrados() {
-        let l = [...this.negocios];
-        if (this.categoriaSelecionada) l = l.filter(n => n.categorias && n.categorias.includes(this.categoriaSelecionada));
-        if (this.busca) {
-          const b = this.busca.toLowerCase();
-          l = l.filter(n => (n.nomefantasia || '').toLowerCase().includes(b) || (n.nomeirmao || '').toLowerCase().includes(b) || (n.categorias || '').toLowerCase().includes(b));
+      negociosFiltrados() {
+        let dados = [...this.estado.negocios];
+        if (this.estado.categoriaSelecionada) {
+          dados = dados.filter(i => i.categorias && i.categorias.includes(this.estado.categoriaSelecionada));
         }
-        return l;
+        if (this.estado.busca) {
+          const t = this.estado.busca.toLowerCase();
+          dados = dados.filter(i => (i.nomefantasia || '').toLowerCase().includes(t) || (i.nomeirmao || '').toLowerCase().includes(t) || (i.categorias || '').toLowerCase().includes(t));
+        }
+        return dados;
       },
-      paginados() { return this.filtrados.slice((this.pagina - 1) * this.itensPag, this.pagina * this.itensPag); },
-      totalPaginas() { return Math.ceil(this.filtrados.length / this.itensPag); }
+      negociosPaginados() {
+        const i = (this.estado.pagina - 1) * this.estado.itensPag;
+        return this.negociosFiltrados.slice(i, i + this.estado.itensPag);
+      },
+      totalPaginas() { return Math.ceil(this.negociosFiltrados.length / this.estado.itensPag); }
     },
     methods: {
       async carregarDados() {
         try {
-          this.loading = true;
-          // Conecta usando a lógica do seu "Paste" que funciona
+          this.estado.loading = true;
+          // CONEXÃO CORRIGIDA BASEADA NO SEU CÓDIGO FUNCIONAL
           const response = await fetch(`${this.API_URL}?t=${Date.now()}`, {
             method: 'GET',
             mode: 'cors',
             redirect: 'follow',
             headers: { Accept: 'application/json' }
           });
-          
           if (!response.ok) throw new Error('Erro na rede');
-          
           const res = await response.json();
-          // Lida tanto com retorno direto em array quanto com objeto {success, data}
-          this.negocios = Array.isArray(res) ? res : (res.data || []);
+          // Aceita tanto Array direto quanto {data: []}
+          this.estado.negocios = Array.isArray(res) ? res : (res.data || []);
+          this.construirCategorias();
         } catch (err) {
-          console.error("Erro API:", err);
-          alert("Erro ao sincronizar dados. Verifique sua internet.");
-        } finally {
-          this.loading = false;
-        }
+          console.error(err);
+        } finally { this.estado.loading = false; }
       },
-      verDetalhes(n) { this.selec = n; this.view = 'detalhes'; window.scrollTo(0,0); },
-      irParaGrid() { this.view = 'grid'; this.formEnviado = false; this.step = 1; window.scrollTo(0,0); },
-      handleFile(e) {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (ev) => { this.form.fileData = ev.target.result; };
-        reader.readAsDataURL(file);
+      construirCategorias() {
+        const s = new Set();
+        this.estado.negocios.forEach(i => { if(i.categorias) i.categorias.split(',').forEach(c => s.add(c.trim())); });
+        this.categorias = [...s].sort();
       },
-      async enviarForm() {
+      abrirDetalhes(item) { this.detalhe = item; this.tela = 'detalhes'; window.scrollTo(0,0); },
+      irParaGrid() { this.tela = 'grid'; this.cadastroSucesso = false; this.passo = 1; window.scrollTo(0,0); },
+      limparFiltros() { this.estado.busca = ''; this.estado.categoriaSelecionada = ''; },
+      converterImagem(e) {
+        const f = e.target.files[0];
+        const r = new FileReader();
+        reader.onload = ev => { this.form.fileData = ev.target.result; };
+        if(f) reader.readAsDataURL(f);
+      },
+      async enviarFormulario() {
         this.submitting = true;
         try {
-          // POST via no-cors para evitar bloqueios de redirecionamento do Google
-          await fetch(this.API_URL, { 
-            method: 'POST', 
-            mode: 'no-cors', 
-            headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify(this.form) 
+          await fetch(this.API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(this.form)
           });
-          this.formEnviado = true;
-        } catch (e) {
-          alert("Ocorreu um erro no envio. Verifique sua internet.");
-        } finally {
-          this.submitting = false;
-        }
+          this.cadastroSucesso = true;
+        } catch (err) {
+          alert("Erro no envio.");
+        } finally { this.submitting = false; }
       },
       getWpp(t) { if(!t) return "#"; let n = t.replace(/\D/g, ""); return `https://wa.me/55${n}`; },
-      getInsta(u) { if(!u) return "#"; let i = u.replace("@","").trim(); return i.includes("http") ? i : `https://instagram.com/${i}`; },
-      limparFiltros() { this.busca = ''; this.categoriaSelecionada = ''; }
+      getInsta(u) { if(!u) return "#"; let i = u.replace("@","").trim(); return i.includes("http") ? i : `https://instagram.com/${i}`; }
     },
     mounted() { this.carregarDados(); }
   }).mount('#app');
