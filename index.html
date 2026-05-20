@@ -1,1176 +1,355 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  />
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Catálogo de Negócios Maçonaria Sergipe</title>
-
-  <!-- Bootstrap -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
-
-  <!-- Font Awesome -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-  />
-
-  <!-- Vue CDN -->
+  
+  <!-- Bootstrap 5.3 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <!-- Vue 3 -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 
   <style>
-    :root {
-      --primary-dark: #182434;
-      --primary-gold: #ffc107;
-      --bg-light: #f4f6f9;
-      --card-radius: 18px;
-    }
+    :root { --primary-dark: #1a2a3a; --gold: #ffc107; --bg: #f4f6f9; }
+    body { background-color: var(--bg); font-family: 'Segoe UI', system-ui, sans-serif; overflow-x: hidden; }
+    [v-cloak] { display: none; }
 
-    * {
-      box-sizing: border-box;
-    }
+    /* NAVBAR */
+    .navbar-custom { background: linear-gradient(135deg, #182434, #24364d); }
+    .navbar-brand { font-size: 0.95rem; line-height: 1.2; white-space: normal; max-width: 200px; cursor: pointer; }
+    .btn-cadastrar { background: var(--gold); color: #1a2a3a; font-weight: bold; border: none; border-radius: 20px; padding: 6px 18px; font-size: 0.85rem; transition: 0.3s; }
+    .btn-cadastrar:hover { background: #e0a800; transform: translateY(-2px); }
 
-    body {
-      background: var(--bg-light);
-      font-family:
-        "Segoe UI",
-        system-ui,
-        -apple-system,
-        sans-serif;
-      overflow-x: hidden;
-      color: #1f2937;
-    }
+    /* GRID & CARDS */
+    .filter-section { background: white; border-radius: 18px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid rgba(0,0,0,0.05); }
+    .label-v { color: #888; font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: block; }
+    .card-negocio { border: none; border-radius: 18px; cursor: pointer; transition: 0.3s ease; background: white; height: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.06); overflow: hidden; }
+    .card-negocio:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
+    .img-box { width: 100%; aspect-ratio: 1 / 1; position: relative; overflow: hidden; background: #eee; }
+    .img-box img { width: 100%; height: 100%; object-fit: cover; }
+    .badge-cat { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.75); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.65rem; font-weight: bold; z-index: 2; backdrop-filter: blur(4px); }
+    
+    /* DETALHES */
+    .detail-bg { background: linear-gradient(135deg, #182434, #24364d); padding: 50px 0 100px; text-align: center; color: white; }
+    .img-detail-wrapper { width: 170px; height: 170px; margin: -85px auto 0; position: relative; z-index: 10; }
+    .img-detail-wrapper img { width: 100%; height: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 22px; border: 5px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.15); background: white; }
+    .detail-content { background: white; border-radius: 30px 30px 0 0; min-height: 100vh; padding-top: 50px; }
+    
+    /* BOTÕES AÇÃO */
+    .btn-acao { border-radius: 15px; padding: 16px; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none !important; color: white; transition: 0.2s; font-size: 0.9rem; }
+    .btn-acao:not(.disabled):active { transform: scale(0.96); }
+    .btn-acao.disabled { background: #e9ecef !important; color: #adb5bd !important; cursor: not-allowed; pointer-events: none; box-shadow: none; }
 
-    .navbar-custom {
-      background: linear-gradient(135deg, #182434, #24364d);
-      backdrop-filter: blur(10px);
-    }
-
-    .navbar-brand-custom {
-      font-size: 0.95rem;
-      line-height: 1.2;
-      white-space: normal;
-      max-width: 220px;
-      cursor: pointer;
-    }
-
-    .btn-cadastrar {
-      background: var(--primary-gold);
-      color: #1a2a3a;
-      font-weight: 700;
-      border: none;
-      border-radius: 999px;
-      padding: 10px 18px;
-      font-size: 0.85rem;
-      transition: 0.25s ease;
-      box-shadow: 0 10px 25px rgba(255, 193, 7, 0.2);
-    }
-
-    .btn-cadastrar:hover {
-      transform: translateY(-2px);
-      background: #ffca2c;
-    }
-
-    .filter-card,
-    .form-box {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 24px;
-      padding: 24px;
-      border: 1px solid rgba(0, 0, 0, 0.05);
-      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.06);
-    }
-
-    .label-v {
-      color: #6b7280;
-      font-weight: 800;
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .form-control,
-    .form-select,
-    textarea {
-      border-radius: 14px !important;
-      min-height: 48px;
-      border: 1px solid #dbe1e8;
-      padding-left: 14px;
-      box-shadow: none !important;
-    }
-
-    textarea.form-control {
-      min-height: 120px;
-      resize: none;
-    }
-
-    .form-control:focus,
-    .form-select:focus {
-      border-color: #ffc107;
-      box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.2) !important;
-    }
-
-    .card-negocio {
-      border: none;
-      border-radius: var(--card-radius);
-      overflow: hidden;
-      transition: 0.3s ease;
-      background: white;
-      cursor: pointer;
-      height: 100%;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
-    }
-
-    .card-negocio:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .img-box {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      overflow: hidden;
-      position: relative;
-      background: #e5e7eb;
-    }
-
-    .img-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: 0.3s ease;
-    }
-
-    .card-negocio:hover .img-box img {
-      transform: scale(1.03);
-    }
-
-    .badge-cat {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      z-index: 5;
-      background: rgba(0, 0, 0, 0.8);
-      color: white;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 0.65rem;
-      font-weight: 700;
-      backdrop-filter: blur(8px);
-    }
-
-    .detail-bg {
-      background: linear-gradient(135deg, #182434, #24364d);
-      padding: 50px 0 110px;
-      text-align: center;
-      color: white;
-    }
-
-    .img-detail-wrapper {
-      width: 170px;
-      height: 170px;
-      margin: -85px auto 0;
-      position: relative;
-      z-index: 10;
-    }
-
-    .img-detail-wrapper img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 24px;
-      border: 5px solid white;
-      background: white;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    }
-
-    .detail-content {
-      background: white;
-      border-radius: 30px 30px 0 0;
-      min-height: 100vh;
-      padding-top: 40px;
-    }
-
-    .info-card {
-      background: #f8fafc;
-      border-radius: 20px;
-      padding: 20px;
-      border: 1px solid #e5e7eb;
-    }
-
-    .btn-acao {
-      border-radius: 18px;
-      padding: 15px;
-      font-weight: 700;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none !important;
-      color: white;
-      transition: 0.2s ease;
-      font-size: 0.9rem;
-      min-height: 58px;
-    }
-
-    .btn-acao:hover {
-      transform: translateY(-2px);
-      opacity: 0.96;
-    }
-
-    .btn-acao.disabled {
-      background: #e5e7eb !important;
-      color: #9ca3af !important;
-      pointer-events: none;
-      box-shadow: none;
-    }
-
-    .progress {
-      height: 8px;
-      border-radius: 999px;
-      overflow: hidden;
-      background: #e5e7eb;
-    }
-
-    .form-step-enter {
-      animation: fadeIn 0.25s ease;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 576px) {
-      .navbar-brand-custom {
-        max-width: 160px;
-        font-size: 0.82rem;
-      }
-
-      .btn-cadastrar {
-        padding: 8px 14px;
-        font-size: 0.75rem;
-      }
-
-      .filter-card,
-      .form-box {
-        padding: 18px;
-        border-radius: 20px;
-      }
-
-      .detail-bg {
-        padding: 40px 0 95px;
-      }
-
-      .img-detail-wrapper {
-        width: 140px;
-        height: 140px;
-        margin-top: -70px;
-      }
-    }
+    /* FORMULÁRIO */
+    .form-box { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); max-width: 600px; margin: auto; }
+    .progress { height: 8px; border-radius: 10px; margin-bottom: 25px; background: #e9ecef; }
   </style>
 </head>
-
 <body>
-  <div id="app">
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top shadow-sm">
-      <div class="container py-2">
-        <div
-          class="navbar-brand navbar-brand-custom fw-bold"
-          @click="roteamento('grid')"
-        >
-          Catálogo de Negócios
-          <br />
-          <small class="opacity-75">
-            Maçonaria Sergipe
-          </small>
-        </div>
 
-        <button
-          class="btn btn-cadastrar"
-          @click="roteamento('cadastro')"
-        >
-          <i class="fa fa-plus-circle me-2"></i>
-          Cadastrar
-        </button>
-      </div>
-    </nav>
+<div id="app" v-cloak>
+  
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-dark navbar-custom sticky-top shadow">
+    <div class="container d-flex justify-content-between align-items-center">
+      <span class="navbar-brand fw-bold" @click="irParaGrid">
+        Catálogo de Negócios <br><small class="opacity-75">Maçonaria Sergipe</small>
+      </span>
+      <button v-if="view === 'grid'" class="btn-cadastrar" @click="view = 'cadastro'">
+        <i class="fa fa-plus-circle me-1"></i> Cadastrar
+      </button>
+    </div>
+  </nav>
 
-    <!-- GRID -->
-    <section
-      v-if="tela === 'grid'"
-      class="container py-4"
-    >
-      <!-- FILTROS -->
-      <div class="filter-card mb-4">
+  <!-- TELA 1: GRID / CATALOGO -->
+  <div v-if="view === 'grid'" class="container py-4">
+    
+    <!-- Filtros -->
+    <div class="filter-section text-start mx-1">
         <div class="row g-3">
-          <div class="col-12 col-lg-8">
-            <label class="label-v">
-              Buscar
-            </label>
-
-            <div class="input-group">
-              <span class="input-group-text bg-white border-end-0">
-                <i class="fa fa-search text-muted"></i>
-              </span>
-
-              <input
-                v-model="estado.busca"
-                type="text"
-                class="form-control border-start-0"
-                placeholder="Nome, área ou irmão..."
-              />
-            </div>
+          <div class="col-12 col-md-7">
+            <label class="label-v">O que você procura?</label>
+            <input type="text" class="form-control" placeholder="Negócio, área ou irmão..." v-model="busca" @input="pagina = 1">
           </div>
-
-          <div class="col-12 col-lg-4">
-            <label class="label-v">
-              Área de Atuação
-            </label>
-
-            <select
-              v-model="estado.categoriaSelecionada"
-              class="form-select"
-            >
-              <option value="">
-                Todas as áreas
-              </option>
-
-              <option
-                v-for="cat in categorias"
-                :key="cat"
-                :value="cat"
-              >
-                {{ cat }}
-              </option>
+          <div class="col-12 col-md-5">
+            <label class="label-v">Área de Atuação</label>
+            <select class="form-select" v-model="categoriaSelecionada" @change="pagina = 1">
+              <option value="">Todas as áreas</option>
+              <option v-for="cat in listaCategorias" :key="cat" :value="cat">{{ cat }}</option>
             </select>
           </div>
         </div>
-      </div>
+    </div>
 
-      <!-- LOADER -->
-      <div
-        v-if="estado.loading"
-        class="text-center py-5"
-      >
-        <div
-          class="spinner-border text-warning"
-          role="status"
-        ></div>
+    <!-- Loader -->
+    <div v-if="loading" class="text-center py-5">
+      <div class="spinner-border text-warning" role="status"></div>
+      <p class="mt-3 text-muted small fw-bold">Sincronizando com a Planilha...</p>
+    </div>
 
-        <p class="mt-3 text-muted fw-semibold small">
-          Sincronizando com a Planilha...
-        </p>
-      </div>
+    <!-- Sem Resultados -->
+    <div v-else-if="filtrados.length === 0" class="text-center py-5">
+      <i class="fa fa-search-minus fa-3x text-muted mb-3"></i>
+      <p class="text-muted">Nenhum resultado encontrado.</p>
+      <button class="btn btn-link btn-sm" @click="limparFiltros">Limpar filtros</button>
+    </div>
 
-      <!-- SEM RESULTADO -->
-      <div
-        v-if="!estado.loading && negociosFiltrados.length === 0"
-        class="text-center py-5"
-      >
-        <i class="fa fa-search-minus fa-3x text-secondary mb-3"></i>
-
-        <p class="text-muted">
-          Nenhum resultado encontrado.
-        </p>
-
-        <button
-          class="btn btn-outline-dark rounded-pill px-4"
-          @click="limparFiltros"
-        >
-          Limpar Filtros
-        </button>
-      </div>
-
-      <!-- GRID -->
-      <div class="row g-4">
-        <div
-          v-for="item in negociosPaginados"
-          :key="item.id"
-          class="col-12 col-sm-6 col-md-4 col-xl-3"
-        >
-          <div
-            class="card-negocio"
-            @click="abrirDetalhes(item)"
-          >
-            <div class="img-box">
-              <span
-                v-if="item.categorias"
-                class="badge-cat"
-              >
-                {{ item.categorias.split(',')[0] }}
-              </span>
-
-              <img
-                :src="item.urlfotologo || 'https://via.placeholder.com/600x600?text=Sem+Imagem'"
-                :alt="item.nomefantasia"
-                loading="lazy"
-              />
-            </div>
-
-            <div class="p-3">
-              <h6
-                class="fw-bold text-uppercase mb-2"
-                style="
-                  color:#182434;
-                  min-height: 44px;
-                  font-size: .9rem;
-                "
-              >
-                {{ item.nomefantasia || '' }}
-              </h6>
-
-              <p class="small mb-1 text-dark fw-semibold">
-                {{ item.nomeirmao || '' }}
-              </p>
-
-              <p class="small text-muted mb-0">
-                <i class="fa fa-location-dot me-1"></i>
-                {{ item.locaisatendimento || '' }}
-              </p>
-            </div>
+    <!-- Grid de Cards -->
+    <div v-else class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 text-start mx-1">
+      <div v-for="n in paginados" :key="n.id" class="col">
+        <div class="card card-negocio" @click="verDetalhes(n)">
+          <div class="img-box">
+            <span class="badge-cat" v-if="n.categorias">{{ n.categorias.split(',')[0] }}</span>
+            <img :src="n.urlfotologo || n.urlfoto || 'https://via.placeholder.com/500x500?text=Sem+Foto'" loading="lazy">
+          </div>
+          <div class="card-body p-3">
+            <h6 class="fw-bold text-uppercase mb-1" style="color: #1a2a3a; font-size: 0.88rem; min-height: 2.6em;">{{ n.nomefantasia }}</h6>
+            <p class="mb-1 small text-dark fw-semibold text-truncate">{{ n.nomeirmao }}</p>
+            <p class="text-muted small mb-0"><i class="fa fa-location-dot me-1"></i> {{ n.locaisatendimento }}</p>
           </div>
         </div>
       </div>
-    </section>
-
-    <!-- DETALHES -->
-    <section v-if="tela === 'detalhes'">
-      <div class="detail-bg px-3">
-        <div class="container">
-          <h2 class="fw-bold text-uppercase mb-2">
-            {{ detalhe.nomefantasia }}
-          </h2>
-
-          <p class="opacity-75 fst-italic small mb-0">
-            {{ detalhe.slogan }}
-          </p>
-        </div>
-      </div>
-
-      <div class="img-detail-wrapper">
-        <img
-          :src="detalhe.urlfotologo || 'https://via.placeholder.com/600'"
-          alt=""
-        />
-      </div>
-
-      <div class="detail-content">
-        <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-lg-8">
-              <div class="text-center mb-4">
-                <button
-                  class="btn btn-light border rounded-pill px-4 shadow-sm"
-                  @click="roteamento('grid')"
-                >
-                  <i class="fa fa-arrow-left me-2"></i>
-                  Voltar
-                </button>
-              </div>
-
-              <div class="info-card mb-4">
-                <div class="row g-3">
-                  <div class="col-6 border-end">
-                    <label class="label-v">
-                      Responsável
-                    </label>
-
-                    <div class="fw-bold small">
-                      {{
-                        detalhe.nomeproprietaria
-                        || detalhe.nomeirmao
-                      }}
-                    </div>
-
-                    <div class="small text-muted">
-                      {{ detalhe.vinculo }}
-                    </div>
-                  </div>
-
-                  <div class="col-6">
-                    <label class="label-v">
-                      Indicação / Ir.
-                    </label>
-
-                    <div class="fw-bold small">
-                      {{ detalhe.nomeirmao }}
-                    </div>
-
-                    <div class="small text-muted">
-                      {{ detalhe.grau }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="px-lg-3 pb-5">
-                <label class="label-v">
-                  Sobre o Negócio
-                </label>
-
-                <p
-                  class="text-secondary small"
-                  style="
-                    white-space: pre-line;
-                    line-height: 1.8;
-                  "
-                >
-                  {{ detalhe.descricao }}
-                </p>
-
-                <div class="row mb-4">
-                  <div class="col-6">
-                    <label class="label-v">
-                      Modalidade
-                    </label>
-
-                    <p class="small fw-bold">
-                      <i class="fa fa-check-circle text-success me-1"></i>
-                      {{ detalhe.modalidade }}
-                    </p>
-                  </div>
-
-                  <div class="col-6">
-                    <label class="label-v">
-                      Onde Atende
-                    </label>
-
-                    <p class="small fw-bold">
-                      <i class="fa fa-location-dot text-danger me-1"></i>
-                      {{ detalhe.locaisatendimento }}
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  v-if="detalhe.diferencial"
-                  class="alert alert-success border-0 shadow-sm rounded-4"
-                >
-                  <i class="fa fa-star me-2"></i>
-
-                  <strong class="small">
-                    Diferencial para Irmãos:
-                  </strong>
-
-                  <br />
-
-                  <span class="small">
-                    {{ detalhe.diferencial }}
-                  </span>
-                </div>
-
-                <!-- BOTÕES -->
-                <div class="mt-5">
-                  <a
-                    :href="linkWhatsapp"
-                    target="_blank"
-                    class="btn-acao shadow-sm"
-                    :class="{ disabled: !detalhe.whatsapp }"
-                    style="background:#25d366;"
-                  >
-                    <i class="fab fa-whatsapp me-2 fa-lg"></i>
-
-                    <span>
-                      {{
-                        detalhe.whatsapp
-                          ? 'FALAR NO WHATSAPP'
-                          : 'WHATSAPP INDISPONÍVEL'
-                      }}
-                    </span>
-                  </a>
-
-                  <a
-                    :href="detalhe.instagram || '#'"
-                    target="_blank"
-                    class="btn-acao shadow-sm"
-                    :class="{ disabled: !detalhe.instagram }"
-                    style="
-                      background:
-                      linear-gradient(
-                        45deg,
-                        #f09433,
-                        #e6683c,
-                        #dc2743,
-                        #cc2366,
-                        #bc1888
-                      );
-                    "
-                  >
-                    <i class="fab fa-instagram me-2 fa-lg"></i>
-
-                    <span>
-                      {{
-                        detalhe.instagram
-                          ? 'VER INSTAGRAM'
-                          : 'INSTAGRAM INDISPONÍVEL'
-                      }}
-                    </span>
-                  </a>
-
-                  <a
-                    :href="detalhe.site || '#'"
-                    target="_blank"
-                    class="btn-acao shadow-sm"
-                    :class="{ disabled: !detalhe.site }"
-                    style="background:#1f2937;"
-                  >
-                    <i class="fa fa-globe me-2 fa-lg"></i>
-
-                    <span>
-                      {{
-                        detalhe.site
-                          ? 'VISITAR SITE'
-                          : 'SITE INDISPONÍVEL'
-                      }}
-                    </span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CADASTRO -->
-    <section
-      v-if="tela === 'cadastro'"
-      class="container py-4"
-    >
-      <div class="form-box mx-auto">
-        <div
-          class="d-flex justify-content-between align-items-center mb-4"
-        >
-          <div>
-            <h4 class="fw-bold mb-1">
-              Novo Cadastro
-            </h4>
-
-            <small class="text-muted">
-              Preencha os dados abaixo
-            </small>
-          </div>
-
-          <button
-            class="btn-close"
-            @click="roteamento('grid')"
-          ></button>
-        </div>
-
-        <!-- SUCESSO -->
-        <div
-          v-if="cadastroSucesso"
-          class="text-center py-5"
-        >
-          <i class="fa fa-circle-check fa-4x text-success mb-3"></i>
-
-          <h5 class="fw-bold">
-            Cadastro Enviado!
-          </h5>
-
-          <p class="text-muted small">
-            Obrigado! Seus dados foram recebidos. TFA!
-          </p>
-
-          <button
-            class="btn btn-dark rounded-pill px-5 mt-3"
-            @click="roteamento('grid')"
-          >
-            Ir para o Catálogo
-          </button>
-        </div>
-
-        <!-- FORM -->
-        <div v-else>
-          <!-- PROGRESS -->
-          <div class="progress mb-4">
-            <div
-              class="progress-bar bg-warning"
-              :style="{ width: progresso + '%' }"
-            ></div>
-          </div>
-
-          <!-- PASSO 1 -->
-          <div
-            v-if="passo === 1"
-            class="form-step-enter"
-          >
-            <div class="mb-3">
-              <label class="label-v">
-                Nome do Irmão
-              </label>
-
-              <input
-                v-model="form.nomeIrmao"
-                type="text"
-                class="form-control"
-                placeholder="Nome completo"
-              />
-            </div>
-
-            <div class="mb-3">
-              <label class="label-v">
-                Grau
-              </label>
-
-              <select
-                v-model="form.grau"
-                class="form-select"
-              >
-                <option value="Aprendiz">
-                  Aprendiz
-                </option>
-
-                <option value="Companheiro">
-                  Companheiro
-                </option>
-
-                <option value="Mestre">
-                  Mestre
-                </option>
-              </select>
-            </div>
-
-            <div class="mb-3">
-              <label class="label-v">
-                Vínculo
-              </label>
-
-              <select
-                v-model="form.vinculo"
-                class="form-select"
-              >
-                <option value="Proprio">
-                  Negócio próprio
-                </option>
-
-                <option value="Companheira">
-                  Da esposa/companheira
-                </option>
-
-                <option value="Outro">
-                  De outro familiar
-                </option>
-              </select>
-            </div>
-
-            <div
-              v-if="form.vinculo !== 'Proprio'"
-              class="mb-3"
-            >
-              <label class="label-v">
-                Nome da Proprietária
-              </label>
-
-              <input
-                v-model="form.nomeProprietaria"
-                type="text"
-                class="form-control"
-              />
-            </div>
-
-            <button
-              class="btn btn-dark w-100 rounded-pill py-3"
-              @click="mudarPasso(2)"
-            >
-              Próximo
-            </button>
-          </div>
-
-          <!-- PASSO 2 -->
-          <div
-            v-if="passo === 2"
-            class="form-step-enter"
-          >
-            <div class="mb-3">
-              <label class="label-v">
-                Nome Fantasia do Negócio
-              </label>
-
-              <input
-                v-model="form.nomeFantasia"
-                type="text"
-                class="form-control"
-              />
-            </div>
-
-            <div class="mb-3">
-              <label class="label-v">
-                Categorias
-              </label>
-
-              <input
-                v-model="form.categorias"
-                type="text"
-                class="form-control"
-                placeholder="Ex: Fotografia, Advocacia"
-              />
-            </div>
-
-            <div class="mb-3">
-              <label class="label-v">
-                WhatsApp
-              </label>
-
-              <input
-                v-model="form.whatsapp"
-                type="tel"
-                class="form-control"
-                placeholder="(00) 00000-0000"
-              />
-            </div>
-
-            <div class="mb-4">
-              <label class="label-v">
-                Logo / Foto (Quadrada)
-              </label>
-
-              <input
-                type="file"
-                class="form-control"
-                accept="image/*"
-                @change="converterImagem"
-              />
-            </div>
-
-            <div class="d-flex gap-2">
-              <button
-                class="btn btn-outline-secondary w-100 rounded-pill py-3"
-                @click="mudarPasso(1)"
-              >
-                Voltar
-              </button>
-
-              <button
-                class="btn btn-dark w-100 rounded-pill py-3"
-                @click="mudarPasso(3)"
-              >
-                Próximo
-              </button>
-            </div>
-          </div>
-
-          <!-- PASSO 3 -->
-          <div
-            v-if="passo === 3"
-            class="form-step-enter"
-          >
-            <div class="mb-3">
-              <label class="label-v">
-                Descrição Curta
-              </label>
-
-              <textarea
-                v-model="form.descricao"
-                class="form-control"
-              ></textarea>
-            </div>
-
-            <div class="mb-3">
-              <label class="label-v">
-                Abrangência de Atendimento
-              </label>
-
-              <input
-                v-model="form.locaisAtendimento"
-                type="text"
-                class="form-control"
-                placeholder="Cidades ou Estados"
-              />
-            </div>
-
-            <div
-              class="
-                alert
-                alert-light
-                border
-                rounded-4
-                small
-                text-muted
-                mb-4
-              "
-            >
-              Ao enviar, seu cadastro passará por moderação. TFA!
-            </div>
-
-            <div class="d-flex gap-2">
-              <button
-                class="btn btn-outline-secondary w-100 rounded-pill py-3"
-                @click="mudarPasso(2)"
-              >
-                Voltar
-              </button>
-
-              <button
-                class="btn btn-success w-100 rounded-pill py-3 fw-bold"
-                @click="enviarFormulario"
-              >
-                Finalizar Cadastro
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    </div>
+
+    <!-- Paginação -->
+    <nav v-if="totalPaginas > 1" class="mt-5">
+      <ul class="pagination pagination-sm justify-content-center">
+        <li v-for="p in totalPaginas" :class="['page-item', {active: pagina === p}]">
+          <a class="page-link shadow-sm" href="#" @click.prevent="pagina = p">{{ p }}</a>
+        </li>
+      </ul>
+    </nav>
   </div>
 
-  <script>
-    const { createApp } = Vue;
+  <!-- TELA 2: DETALHES -->
+  <div v-if="view === 'detalhes' && selec">
+    <div class="detail-bg px-3">
+        <h2 class="fw-bold text-uppercase mb-2">{{ selec.nomefantasia }}</h2>
+        <p class="fst-italic opacity-75 small mb-0">{{ selec.slogan }}</p>
+    </div>
+    <div class="img-detail-wrapper">
+        <img :src="selec.urlfotologo || selec.urlfoto">
+    </div>
+    <div class="container detail-content text-start px-4">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="text-center mb-4"><button class="btn btn-light btn-sm rounded-pill px-4 border shadow-sm" @click="view = 'grid'">Voltar ao Catálogo</button></div>
+          
+          <div class="row mb-4 bg-light p-3 rounded-4 mx-0 shadow-sm border">
+            <div class="col-6 border-end">
+              <label class="label-v">Responsável</label>
+              <span class="fw-bold d-block">{{ selec.vinculo.toLowerCase() === 'proprio' ? selec.nomeirmao : (selec.nomeproprietaria || selec.nomecompanheira) }}</span>
+              <div class="small text-muted">{{ selec.vinculo.toLowerCase() === 'proprio' ? selec.grau : 'Proprietária' }}</div>
+            </div>
+            <div class="col-6 ps-3 text-start">
+              <label class="label-v">Indicação</label>
+              <span class="fw-bold d-block">Ir. {{ selec.nomeirmao }}</span>
+              <div class="small text-muted">{{ selec.grau }}</div>
+            </div>
+          </div>
 
-    createApp({
-      data() {
-        return {
-          API_URL:
-            'https://script.google.com/macros/s/AKfycbw0Jw1-Wn7F21RTC7OprJ-ICoPW-xHq__nQM5V-KJl-hYNfq18Rgqmv5YFBUhpWG5Ml/exec',
+          <div class="px-1">
+            <label class="label-v">Sobre o Negócio</label>
+            <p class="text-secondary small" style="white-space: pre-line; line-height: 1.7;">{{ selec.descricao }}</p>
 
-          tela: 'grid',
+            <div class="row mb-4 g-3">
+                <div class="col-6">
+                    <label class="label-v">Modalidade</label>
+                    <p class="small mb-0 fw-bold"><i class="fa fa-circle-check me-1 text-success"></i> {{ selec.modalidade }}</p>
+                </div>
+                <div class="col-6">
+                    <label class="label-v">Onde Atende</label>
+                    <p class="small mb-0 fw-bold"><i class="fa fa-location-dot me-1 text-danger"></i> {{ selec.locaisatendimento }}</p>
+                </div>
+            </div>
 
-          passo: 1,
+            <div v-if="selec.diferencial" class="alert alert-success border-0 shadow-sm mb-4">
+                <i class="fa fa-star me-1 text-warning"></i> <strong class="small">Diferencial para Irmãos:</strong> <br>
+                <span class="small">{{ selec.diferencial }}</span>
+            </div>
 
-          cadastroSucesso: false,
+            <div class="mt-5 pb-5">
+              <a :href="getWpp(selec.whatsapp)" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !selec.whatsapp }" style="background:#25d366;">
+                <i class="fab fa-whatsapp me-2 fa-lg"></i> {{ selec.whatsapp ? 'FALAR NO WHATSAPP' : 'WHATSAPP INDISPONÍVEL' }}
+              </a>
+              <a :href="getInsta(selec.instagram)" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !selec.instagram }" style="background:linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);">
+                <i class="fab fa-instagram me-2 fa-lg"></i> {{ selec.instagram ? 'VER INSTAGRAM' : 'INSTAGRAM INDISPONÍVEL' }}
+              </a>
+              <a :href="selec.site" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !selec.site }" style="background:#1f2937;">
+                <i class="fa fa-globe me-2 fa-lg"></i> {{ selec.site ? 'VISITAR SITE' : 'SITE INDISPONÍVEL' }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-          detalhe: {},
+  <!-- TELA 3: CADASTRO -->
+  <div v-if="view === 'cadastro'" class="container py-4">
+    <div class="form-box text-start">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold mb-0">Novo Cadastro</h5>
+            <button class="btn-close" @click="irParaGrid"></button>
+        </div>
 
-          categorias: [],
+        <div v-if="!formEnviado">
+            <div class="progress"><div class="progress-bar bg-warning" :style="{width: (step * 33.3) + '%'}"></div></div>
 
-          form: {
-            nomeIrmao: '',
-            grau: 'Aprendiz',
-            vinculo: 'Proprio',
-            nomeProprietaria: '',
-            nomeFantasia: '',
-            categorias: '',
-            whatsapp: '',
-            descricao: '',
-            locaisAtendimento: '',
-            imagemBase64: ''
-          },
+            <!-- PASSO 1 -->
+            <div v-if="step === 1">
+                <label class="label-v">Nome do Irmão</label>
+                <input type="text" v-model="form.nomeIrmao" class="form-control mb-3" placeholder="Nome completo">
+                <label class="label-v">Grau</label>
+                <select v-model="form.grau" class="form-select mb-3">
+                    <option value="Aprendiz">Aprendiz</option>
+                    <option value="Companheiro">Companheiro</option>
+                    <option value="Mestre">Mestre</option>
+                </select>
+                <label class="label-v">Vínculo com o Negócio</label>
+                <select v-model="form.vinculo" class="form-select mb-3">
+                    <option value="Proprio">Negócio próprio</option>
+                    <option value="Companheira">Da esposa/companheira</option>
+                    <option value="Outro">De outro familiar</option>
+                </select>
+                <div v-if="form.vinculo !== 'Proprio'">
+                    <label class="label-v">Nome da Proprietária</label>
+                    <input type="text" v-model="form.nomeProprietaria" class="form-control mb-3">
+                </div>
+                <button class="btn btn-dark w-100 mt-3 rounded-pill py-3" @click="step = 2" :disabled="!form.nomeIrmao">Próximo Passo</button>
+            </div>
 
-          estado: {
-            negocios: [],
-            loading: true,
-            busca: '',
-            categoriaSelecionada: '',
-            pagina: 1,
-            itensPag: 12
-          }
-        };
-      },
+            <!-- PASSO 2 -->
+            <div v-if="step === 2">
+                <label class="label-v">Nome Fantasia do Negócio</label>
+                <input type="text" v-model="form.nomeFantasia" class="form-control mb-3">
+                <label class="label-v">Áreas de Atuação</label>
+                <input type="text" v-model="form.categorias" class="form-control mb-3" placeholder="Ex: Fotografia, Advocacia">
+                <label class="label-v">WhatsApp</label>
+                <input type="tel" v-model="form.whatsapp" class="form-control mb-3" placeholder="(00) 00000-0000">
+                <label class="label-v">Logo ou Foto (Quadrada)</label>
+                <input type="file" @change="handleFile" class="form-control mb-4" accept="image/*">
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary w-100 rounded-pill" @click="step = 1">Voltar</button>
+                    <button class="btn btn-dark w-100 rounded-pill" @click="step = 3" :disabled="!form.nomeFantasia">Próximo</button>
+                </div>
+            </div>
 
-      computed: {
-        negociosFiltrados() {
-          let dados = [...this.estado.negocios];
+            <!-- PASSO 3 -->
+            <div v-if="step === 3">
+                <label class="label-v">Descrição dos Serviços</label>
+                <textarea v-model="form.descricao" class="form-control mb-3" rows="3"></textarea>
+                <label class="label-v">Abrangência de Atendimento</label>
+                <input type="text" v-model="form.locaisAtendimento" class="form-control mb-3" placeholder="Cidades ou Estados">
+                <div class="alert alert-light border small text-muted">Ao enviar, seu cadastro passará por moderação. TFA!</div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary w-100 rounded-pill" @click="step = 2">Voltar</button>
+                    <button class="btn btn-success w-100 rounded-pill py-3 fw-bold" @click="enviarForm" :disabled="submitting">
+                        {{ submitting ? 'Enviando...' : 'Finalizar Cadastro' }}
+                    </button>
+                </div>
+            </div>
+        </div>
 
-          if (this.estado.categoriaSelecionada) {
-            dados = dados.filter(item => {
-              return (
-                item.categorias &&
-                item.categorias.includes(
-                  this.estado.categoriaSelecionada
-                )
-              );
-            });
-          }
+        <div v-else class="text-center py-5">
+            <i class="fa fa-circle-check fa-4x text-success mb-3"></i>
+            <h4 class="fw-bold">Cadastro Enviado!</h4>
+            <p class="text-muted">Os dados foram recebidos e serão analisados. TFA!</p>
+            <button class="btn btn-dark mt-3 px-5 rounded-pill" @click="irParaGrid">Voltar ao Catálogo</button>
+        </div>
+    </div>
+  </div>
 
-          if (this.estado.busca) {
-            const termo =
-              this.estado.busca.toLowerCase();
+</div>
 
-            dados = dados.filter(item => {
-              return (
-                (item.nomefantasia || '')
-                  .toLowerCase()
-                  .includes(termo)
-
-                ||
-
-                (item.nomeirmao || '')
-                  .toLowerCase()
-                  .includes(termo)
-
-                ||
-
-                (item.categorias || '')
-                  .toLowerCase()
-                  .includes(termo)
-              );
-            });
-          }
-
-          return dados;
-        },
-
-        negociosPaginados() {
-          const inicio =
-            (this.estado.pagina - 1)
-            * this.estado.itensPag;
-
-          return this.negociosFiltrados.slice(
-            inicio,
-            inicio + this.estado.itensPag
-          );
-        },
-
-        progresso() {
-          if (this.passo === 1) return 33.3;
-          if (this.passo === 2) return 66.6;
-          return 100;
-        },
-
-        linkWhatsapp() {
-          if (!this.detalhe.whatsapp) {
-            return '#';
-          }
-
-          return `https://wa.me/55${this.detalhe.whatsapp.replace(/\D/g, '')}`;
-        }
-      },
-
-      methods: {
-        async carregarDados() {
-          try {
-            this.estado.loading = true;
-
-            const response = await fetch(
-              `${this.API_URL}?t=${Date.now()}`,
-              {
-                method: 'GET',
-                mode: 'cors',
-                redirect: 'follow',
-                headers: {
-                  Accept: 'application/json'
-                }
-              }
-            );
-
-            if (!response.ok) {
-              throw new Error('Erro HTTP');
-            }
-
-            const json = await response.json();
-
-            if (!json.success) {
-              throw new Error(
-                json.error || 'Erro API'
-              );
-            }
-
-            this.estado.negocios =
-              json.data || [];
-
-            this.construirCategorias();
-
-          } catch (err) {
-            console.error(err);
-
-            alert(
-              'Erro ao carregar dados da API.'
-            );
-
-          } finally {
-            this.estado.loading = false;
-          }
-        },
-
-        construirCategorias() {
-          const categorias = new Set();
-
-          this.estado.negocios.forEach(item => {
-            if (!item.categorias) return;
-
-            item.categorias
-              .split(',')
-              .forEach(cat => {
-                categorias.add(cat.trim());
-              });
-          });
-
-          this.categorias = [...categorias]
-            .sort();
-        },
-
-        abrirDetalhes(item) {
-          this.detalhe = item;
-          this.roteamento('detalhes');
-        },
-
-        roteamento(tela) {
-          this.tela = tela;
-
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
-        },
-
-        mudarPasso(passo) {
-          this.passo = passo;
-        },
-
-        limparFiltros() {
-          this.estado.busca = '';
-          this.estado.categoriaSelecionada = '';
-        },
-
-        converterImagem(event) {
-          const file =
-            event.target.files[0];
-
-          if (!file) return;
-
-          const reader = new FileReader();
-
-          reader.onload = e => {
-            this.form.imagemBase64 =
-              e.target.result;
-          };
-
-          reader.readAsDataURL(file);
-        },
-
-        async enviarFormulario() {
-          try {
-            const payload = {
-              ...this.form
-            };
-
-            console.log(
-              'Enviando:',
-              payload
-            );
-
-            this.cadastroSucesso = true;
-
-          } catch (err) {
-            console.error(err);
-
-            alert(
-              'Erro ao enviar formulário.'
-            );
-          }
-        }
-      },
-
-      mounted() {
-        this.carregarDados();
+<script>
+  const { createApp } = Vue;
+  createApp({
+    data() {
+      return {
+        API_URL: 'https://script.google.com/macros/s/AKfycbxFRcaIk838QmPAAKdb3oHTc0hJdj48j02Mi_AWETDsKe-hPydWha_SrMjo17Pfwewr/exec',
+        view: 'grid', loading: true, negocios: [], selec: null,
+        busca: '', categoriaSelecionada: '', pagina: 1, itensPag: 12,
+        step: 1, formEnviado: false, submitting: false,
+        form: { nomeIrmao: '', grau: 'Aprendiz', vinculo: 'Proprio', nomeProprietaria: '', nomeFantasia: '', categorias: '', whatsapp: '', fileData: '', descricao: '', locaisAtendimento: '', modalidade: 'Presencial', email: 'contato@catalogo.com' }
       }
-    }).mount('#app');
-  </script>
+    },
+    computed: {
+      listaCategorias() {
+        const cats = new Set();
+        this.negocios.forEach(n => { if(n.categorias) n.categorias.split(',').forEach(c => cats.add(c.trim())); });
+        return Array.from(cats).sort();
+      },
+      filtrados() {
+        let l = [...this.negocios];
+        if (this.categoriaSelecionada) l = l.filter(n => n.categorias && n.categorias.includes(this.categoriaSelecionada));
+        if (this.busca) {
+          const b = this.busca.toLowerCase();
+          l = l.filter(n => (n.nomefantasia || '').toLowerCase().includes(b) || (n.nomeirmao || '').toLowerCase().includes(b) || (n.categorias || '').toLowerCase().includes(b));
+        }
+        return l;
+      },
+      paginados() { return this.filtrados.slice((this.pagina - 1) * this.itensPag, this.pagina * this.itensPag); },
+      totalPaginas() { return Math.ceil(this.filtrados.length / this.itensPag); }
+    },
+    methods: {
+      async carregarDados() {
+        try {
+          this.loading = true;
+          // Conecta usando a lógica do seu "Paste" que funciona
+          const response = await fetch(`${this.API_URL}?t=${Date.now()}`, {
+            method: 'GET',
+            mode: 'cors',
+            redirect: 'follow',
+            headers: { Accept: 'application/json' }
+          });
+          
+          if (!response.ok) throw new Error('Erro na rede');
+          
+          const res = await response.json();
+          // Lida tanto com retorno direto em array quanto com objeto {success, data}
+          this.negocios = Array.isArray(res) ? res : (res.data || []);
+        } catch (err) {
+          console.error("Erro API:", err);
+          alert("Erro ao sincronizar dados. Verifique sua internet.");
+        } finally {
+          this.loading = false;
+        }
+      },
+      verDetalhes(n) { this.selec = n; this.view = 'detalhes'; window.scrollTo(0,0); },
+      irParaGrid() { this.view = 'grid'; this.formEnviado = false; this.step = 1; window.scrollTo(0,0); },
+      handleFile(e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (ev) => { this.form.fileData = ev.target.result; };
+        reader.readAsDataURL(file);
+      },
+      async enviarForm() {
+        this.submitting = true;
+        try {
+          // POST via no-cors para evitar bloqueios de redirecionamento do Google
+          await fetch(this.API_URL, { 
+            method: 'POST', 
+            mode: 'no-cors', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify(this.form) 
+          });
+          this.formEnviado = true;
+        } catch (e) {
+          alert("Ocorreu um erro no envio. Verifique sua internet.");
+        } finally {
+          this.submitting = false;
+        }
+      },
+      getWpp(t) { if(!t) return "#"; let n = t.replace(/\D/g, ""); return `https://wa.me/55${n}`; },
+      getInsta(u) { if(!u) return "#"; let i = u.replace("@","").trim(); return i.includes("http") ? i : `https://instagram.com/${i}`; },
+      limparFiltros() { this.busca = ''; this.categoriaSelecionada = ''; }
+    },
+    mounted() { this.carregarDados(); }
+  }).mount('#app');
+</script>
 </body>
 </html>
