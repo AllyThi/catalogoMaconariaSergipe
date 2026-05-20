@@ -5,45 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Catálogo de Negócios Maçonaria Sergipe</title>
 
-  <!-- Estilos: Bootstrap + FontAwesome -->
+  <!-- Bootstrap 5.3 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <!-- Vue 3 -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 
   <style>
-    :root { --dark: #182434; --gold: #ffc107; --bg: #f4f6f9; }
+    :root { --primary-dark: #182434; --gold: #ffc107; --bg: #f4f6f9; }
     body { background: var(--bg); font-family: "Segoe UI", system-ui, sans-serif; overflow-x: hidden; color: #1f2937; }
     [v-cloak] { display: none; }
 
-    /* NAVBAR SPA */
+    /* NAVBAR */
     .navbar-custom { background: linear-gradient(135deg, #182434, #24364d); }
     .navbar-brand-custom { font-size: 0.95rem; line-height: 1.2; max-width: 220px; cursor: pointer; color: white !important; }
-    .btn-cadastrar { background: var(--gold); color: #1a2a3a; font-weight: 700; border: none; border-radius: 999px; padding: 8px 18px; font-size: 0.85rem; transition: 0.25s ease; box-shadow: 0 10px 25px rgba(255, 193, 7, 0.2); }
+    .btn-cadastrar { background: var(--gold); color: #1a2a3a; font-weight: 700; border: none; border-radius: 999px; padding: 10px 18px; font-size: 0.85rem; transition: 0.25s ease; box-shadow: 0 10px 25px rgba(255, 193, 7, 0.2); }
     .btn-cadastrar:hover { transform: translateY(-2px); background: #ffca2c; }
 
-    /* GRID & CARDS */
+    /* CARDS */
     .filter-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 25px; }
     .label-v { color: #6b7280; font-weight: 800; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
     .card-negocio { border: none; border-radius: 18px; overflow: hidden; transition: 0.3s ease; background: white; cursor: pointer; height: 100%; box-shadow: 0 5px 20px rgba(0,0,0,0.06); }
-    .card-negocio:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+    .card-negocio:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); }
     .img-box { width: 100%; aspect-ratio: 1 / 1; overflow: hidden; position: relative; background: #e5e7eb; }
     .img-box img { width: 100%; height: 100%; object-fit: cover; }
-    .badge-cat { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.8); color: white; padding: 5px 12px; border-radius: 999px; font-size: 0.6rem; font-weight: 700; backdrop-filter: blur(8px); }
+    .badge-cat { position: absolute; top: 12px; left: 12px; background: rgba(0, 0, 0, 0.8); color: white; padding: 6px 12px; border-radius: 999px; font-size: 0.6rem; font-weight: 700; backdrop-filter: blur(8px); }
 
     /* DETALHES */
     .detail-bg { background: linear-gradient(135deg, #182434, #24364d); padding: 50px 0 110px; text-align: center; color: white; }
     .img-detail-wrapper { width: 170px; height: 170px; margin: -85px auto 0; position: relative; z-index: 10; }
-    .img-detail-wrapper img { width: 100%; height: 100%; object-fit: cover; border-radius: 24px; border: 5px solid white; background: white; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .img-detail-wrapper img { width: 100%; height: 100%; object-fit: cover; border-radius: 24px; border: 5px solid white; background: white; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); }
     .detail-content { background: white; border-radius: 30px 30px 0 0; min-height: 100vh; padding-top: 40px; }
     .info-card { background: #f8fafc; border-radius: 20px; padding: 20px; border: 1px solid #e5e7eb; }
 
-    /* BOTÕES AÇÃO */
+    /* BOTÕES */
     .btn-acao { border-radius: 18px; padding: 15px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; justify-content: center; text-decoration: none !important; color: white; transition: 0.2s ease; font-size: 0.9rem; min-height: 58px; }
     .btn-acao.disabled { background: #e5e7eb !important; color: #9ca3af !important; pointer-events: none; }
     
     /* FORM */
-    .form-box { background: white; border-radius: 24px; padding: 24px; box-shadow: 0 10px 35px rgba(0,0,0,0.06); max-width: 600px; margin: auto; }
-    .progress { height: 8px; border-radius: 999px; background: #e5e7eb; }
+    .form-box { background: white; border-radius: 24px; padding: 24px; box-shadow: 0 10px 35px rgba(0, 0, 0, 0.06); max-width: 600px; margin: auto; }
+    .progress { height: 8px; border-radius: 999px; background: #e5e7eb; margin-bottom: 25px; }
   </style>
 </head>
 <body>
@@ -51,13 +53,13 @@
 <div id="app" v-cloak>
   
   <!-- NAVBAR -->
-  <nav class="navbar navbar-dark navbar-custom sticky-top shadow-sm">
-    <div class="container">
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top shadow-sm">
+    <div class="container py-1">
       <div class="navbar-brand navbar-brand-custom fw-bold" @click="irParaGrid">
         Catálogo de Negócios <br><small class="opacity-75">Maçonaria Sergipe</small>
       </div>
-      <button v-if="tela === 'grid'" class="btn-cadastrar shadow-sm" @click="tela = 'cadastro'">
-        <i class="fa fa-plus-circle me-1"></i> Cadastrar
+      <button v-if="tela === 'grid'" class="btn btn-cadastrar shadow-sm" @click="tela = 'cadastro'">
+        <i class="fa fa-plus-circle me-2"></i>Cadastrar
       </button>
     </div>
   </nav>
@@ -70,12 +72,12 @@
           <label class="label-v">Buscar</label>
           <div class="input-group">
             <span class="input-group-text bg-white border-end-0"><i class="fa fa-search text-muted"></i></span>
-            <input type="text" v-model="estado.busca" class="form-control border-start-0" placeholder="Nome, área ou irmão...">
+            <input type="text" v-model="estado.busca" class="form-control border-start-0 shadow-none" placeholder="Negócio, área ou irmão...">
           </div>
         </div>
         <div class="col-12 col-lg-4">
           <label class="label-v">Área de Atuação</label>
-          <select v-model="estado.categoriaSelecionada" class="form-select">
+          <select v-model="estado.categoriaSelecionada" class="form-select shadow-none">
             <option value="">Todas as áreas</option>
             <option v-for="cat in categorias" :key="cat" :value="cat">{{ cat }}</option>
           </select>
@@ -83,23 +85,26 @@
       </div>
     </div>
 
+    <!-- LOADER -->
     <div v-if="estado.loading" class="text-center py-5">
       <div class="spinner-border text-warning" role="status"></div>
       <p class="mt-3 text-muted fw-semibold small">Sincronizando com a Planilha...</p>
     </div>
 
+    <!-- SEM RESULTADO -->
     <div v-else-if="negociosFiltrados.length === 0" class="text-center py-5">
       <i class="fa fa-search-minus fa-3x text-secondary mb-3"></i>
       <p class="text-muted">Nenhum resultado encontrado.</p>
       <button class="btn btn-outline-dark rounded-pill px-4" @click="limparFiltros">Limpar Filtros</button>
     </div>
 
+    <!-- GRID -->
     <div v-else class="row g-4 text-start">
       <div v-for="item in negociosPaginados" :key="item.id" class="col-12 col-sm-6 col-md-4 col-xl-3">
         <div class="card-negocio" @click="abrirDetalhes(item)">
           <div class="img-box">
             <span v-if="item.categorias" class="badge-cat">{{ item.categorias.split(',')[0] }}</span>
-            <img :src="item.urlfotologo || item.urlfoto || 'https://via.placeholder.com/600x600?text=Sem+Foto'" loading="lazy">
+            <img :src="item.urlfotologo || 'https://via.placeholder.com/600x600?text=Sem+Foto'" loading="lazy">
           </div>
           <div class="p-3">
             <h6 class="fw-bold text-uppercase mb-2" style="color:#182434; min-height: 44px; font-size: .88rem;">{{ item.nomefantasia }}</h6>
@@ -109,6 +114,15 @@
         </div>
       </div>
     </div>
+
+    <!-- PAGINAÇÃO -->
+    <nav v-if="totalPaginas > 1" class="mt-5">
+      <ul class="pagination pagination-sm justify-content-center">
+        <li v-for="p in totalPaginas" :class="['page-item', {active: estado.pagina === p}]">
+          <a class="page-link shadow-sm" href="#" @click.prevent="estado.pagina = p">{{ p }}</a>
+        </li>
+      </ul>
+    </nav>
   </section>
 
   <!-- TELA 2: DETALHES -->
@@ -120,7 +134,7 @@
       </div>
     </div>
     <div class="img-detail-wrapper">
-      <img :src="detalhe.urlfotologo || detalhe.urlfoto" alt="Logo">
+      <img :src="detalhe.urlfotologo" alt="Logo">
     </div>
     <div class="detail-content text-start">
       <div class="container">
@@ -128,35 +142,57 @@
           <div class="col-lg-8">
             <div class="text-center mb-4">
               <button class="btn btn-light border rounded-pill px-4 shadow-sm" @click="tela = 'grid'">
-                <i class="fa fa-arrow-left me-2"></i> Voltar ao Catálogo
+                <i class="fa fa-arrow-left me-2"></i>Voltar ao Catálogo
               </button>
             </div>
+            
+            <!-- BLOCO DE RESPONSÁVEL / VÍNCULO -->
             <div class="info-card mb-4">
               <div class="row g-3">
-                <div class="col-6 border-end">
+                <div class="col-6 border-end text-start">
                   <label class="label-v">Responsável</label>
                   <div class="fw-bold small">{{ (detalhe.vinculo && detalhe.vinculo.toLowerCase() === 'proprio') ? detalhe.nomeirmao : (detalhe.nomeproprietaria || detalhe.nomecompanheira) }}</div>
                   <div class="small text-muted">{{ (detalhe.vinculo && detalhe.vinculo.toLowerCase() === 'proprio') ? detalhe.grau : 'Proprietária' }}</div>
                 </div>
-                <div class="col-6 ps-3">
-                  <label class="label-v">Indicação / Ir.</label>
+                <div class="col-6 ps-3 text-start">
+                  <label class="label-v">Vínculo / Indicação</label>
                   <div class="fw-bold small">Ir. {{ detalhe.nomeirmao }}</div>
-                  <div class="small text-muted">{{ detalhe.grau }}</div>
+                  <div class="small text-muted">{{ detalhe.grau }} ({{ detalhe.lojapotencia || detalhe.loja }})</div>
                 </div>
               </div>
             </div>
-            <div class="px-lg-3">
+
+            <div class="px-lg-3 pb-5">
               <label class="label-v">Sobre o Negócio</label>
               <p class="text-secondary small" style="white-space: pre-line; line-height: 1.8;">{{ detalhe.descricao }}</p>
+              
               <div class="row mb-4">
-                <div class="col-6"><label class="label-v">Modalidade</label><p class="small fw-bold"><i class="fa fa-check-circle text-success me-1"></i> {{ detalhe.modalidade }}</p></div>
-                <div class="col-6"><label class="label-v">Abrangência</label><p class="small fw-bold"><i class="fa fa-location-dot text-danger me-1"></i> {{ detalhe.locaisatendimento }}</p></div>
+                <div class="col-6 text-start">
+                  <label class="label-v">Modalidade</label>
+                  <p class="small fw-bold"><i class="fa fa-check-circle text-success me-1"></i> {{ detalhe.modalidade }}</p>
+                </div>
+                <div class="col-6 text-start">
+                  <label class="label-v">Onde Atende</label>
+                  <p class="small fw-bold"><i class="fa fa-location-dot text-danger me-1"></i> {{ detalhe.locaisatendimento }}</p>
+                </div>
               </div>
-              <div v-if="detalhe.diferencial" class="alert alert-success border-0 shadow-sm rounded-4"><i class="fa fa-star me-2"></i><strong class="small">Diferencial para Irmãos:</strong><br><span class="small">{{ detalhe.diferencial }}</span></div>
-              <div class="mt-5 pb-5">
-                <a :href="getWpp(detalhe.whatsapp)" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !detalhe.whatsapp }" style="background:#25d366;"><i class="fab fa-whatsapp me-2 fa-lg"></i> WHATSAPP COMERCIAL</a>
-                <a :href="getInsta(detalhe.instagram)" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !detalhe.instagram }" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);"><i class="fab fa-instagram me-2 fa-lg"></i> INSTAGRAM</a>
-                <a :href="detalhe.site" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !detalhe.site }" style="background:#1f2937;"><i class="fa fa-globe me-2 fa-lg"></i> VISITAR SITE</a>
+
+              <div v-if="detalhe.diferencial" class="alert alert-success border-0 shadow-sm rounded-4 text-start">
+                <i class="fa fa-star me-2 text-warning"></i><strong class="small">Diferencial para Irmãos:</strong><br>
+                <span class="small">{{ detalhe.diferencial }}</span>
+              </div>
+
+              <!-- BOTÕES DE AÇÃO -->
+              <div class="mt-5">
+                <a :href="getWpp(detalhe.whatsapp)" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !detalhe.whatsapp }" style="background:#25d366;">
+                  <i class="fab fa-whatsapp me-2 fa-lg"></i>FALAR NO WHATSAPP
+                </a>
+                <a :href="getInsta(detalhe.instagram)" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !detalhe.instagram }" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);">
+                  <i class="fab fa-instagram me-2 fa-lg"></i>INSTAGRAM
+                </a>
+                <a :href="detalhe.site || '#'" target="_blank" class="btn-acao shadow-sm" :class="{ disabled: !detalhe.site }" style="background:#182434;">
+                  <i class="fa fa-globe me-2 fa-lg"></i>VISITAR SITE
+                </a>
               </div>
             </div>
           </div>
@@ -172,45 +208,65 @@
         <h4 class="fw-bold mb-0">Novo Cadastro</h4>
         <button class="btn-close" @click="irParaGrid"></button>
       </div>
+
       <div v-if="cadastroSucesso" class="text-center py-5">
         <i class="fa fa-circle-check fa-4x text-success mb-3"></i>
         <h5 class="fw-bold">Cadastro Enviado!</h5>
-        <p class="text-muted small">Os dados serão analisados. TFA!</p>
-        <button class="btn btn-dark rounded-pill px-5 mt-3" @click="irParaGrid">Voltar</button>
+        <p class="text-muted small">Os dados serão analisados para publicação. TFA!</p>
+        <button class="btn btn-dark rounded-pill px-5 mt-3 shadow-sm" @click="irParaGrid">Voltar</button>
       </div>
+
       <div v-else>
         <div class="progress mb-4"><div class="progress-bar bg-warning" :style="{ width: (passo * 33.3) + '%' }"></div></div>
         
-        <div v-if="passo === 1">
+        <!-- PASSO 1 -->
+        <div v-if="passo === 1" class="text-start">
           <label class="label-v">Nome do Irmão</label>
-          <input type="text" v-model="form.nomeIrmao" class="form-control mb-3" placeholder="Nome completo">
-          <label class="label-v">Grau</label>
-          <select v-model="form.grau" class="form-select mb-3"><option value="Aprendiz">Aprendiz</option><option value="Companheiro">Companheiro</option><option value="Mestre">Mestre</option></select>
-          <label class="label-v">Vínculo</label>
-          <select v-model="form.vinculo" class="form-select mb-3"><option value="Proprio">Negócio próprio</option><option value="Companheira">Da esposa/companheira</option><option value="Outro">De outro familiar</option></select>
-          <div v-if="form.vinculo !== 'Proprio'"><label class="label-v">Nome da Proprietária</label><input type="text" v-model="form.nomeProprietaria" class="form-control mb-3"></div>
-          <button class="btn btn-dark w-100 rounded-pill py-3 mt-3" @click="passo = 2" :disabled="!form.nomeIrmao">Próximo</button>
+          <input type="text" v-model="form.nomeIrmao" class="form-control mb-3 shadow-none" placeholder="Nome completo">
+          <div class="row">
+            <div class="col-6">
+              <label class="label-v">Grau</label>
+              <select v-model="form.grau" class="form-select mb-3 shadow-none"><option value="Aprendiz">Aprendiz</option><option value="Companheiro">Companheiro</option><option value="Mestre">Mestre</option></select>
+            </div>
+            <div class="col-6">
+              <label class="label-v">Vínculo</label>
+              <select v-model="form.vinculo" class="form-select mb-3 shadow-none"><option value="Proprio">Negócio próprio</option><option value="Companheira">Da esposa/companheira</option><option value="Outro">De outro familiar</option></select>
+            </div>
+          </div>
+          <div v-if="form.vinculo !== 'Proprio'"><label class="label-v">Nome da Proprietária</label><input type="text" v-model="form.nomeProprietaria" class="form-control mb-3 shadow-none"></div>
+          <label class="label-v">Loja / Potência</label>
+          <input type="text" v-model="form.loja" class="form-control mb-3 shadow-none" placeholder="Ex: Loja Paz e Amor - GOB">
+          <button class="btn btn-dark w-100 rounded-pill py-3 mt-3 fw-bold" @click="passo = 2" :disabled="!form.nomeIrmao">Próximo Passo</button>
         </div>
 
-        <div v-if="passo === 2">
+        <!-- PASSO 2 -->
+        <div v-if="passo === 2" class="text-start">
           <label class="label-v">Nome Fantasia do Negócio</label>
-          <input type="text" v-model="form.nomeFantasia" class="form-control mb-3">
-          <label class="label-v">Categorias</label>
-          <input type="text" v-model="form.categorias" class="form-control mb-3" placeholder="Ex: Fotografia, Advocacia">
-          <label class="label-v">WhatsApp</label>
-          <input type="tel" v-model="form.whatsapp" class="form-control mb-3" placeholder="(00) 00000-0000">
-          <label class="label-v">Logo (Quadrada)</label>
-          <input type="file" class="form-control mb-4" accept="image/*" @change="converterImagem">
-          <div class="d-flex gap-2"><button class="btn btn-outline-secondary w-100 rounded-pill py-3" @click="passo = 1">Voltar</button><button class="btn btn-dark w-100 rounded-pill py-3" @click="passo = 3" :disabled="!form.nomeFantasia">Próximo</button></div>
+          <input type="text" v-model="form.nomeFantasia" class="form-control mb-3 shadow-none">
+          <label class="label-v">Áreas de Atuação</label>
+          <input type="text" v-model="form.categorias" class="form-control mb-3 shadow-none" placeholder="Ex: Fotografia, Advocacia, Mecânica">
+          <label class="label-v">WhatsApp Comercial</label>
+          <input type="tel" v-model="form.whatsapp" class="form-control mb-3 shadow-none" placeholder="(00) 00000-0000">
+          <label class="label-v">Logo ou Foto (Quadrada)</label>
+          <input type="file" class="form-control mb-4 shadow-none" accept="image/*" @change="converterImagem">
+          <div class="d-flex gap-2"><button class="btn btn-outline-secondary w-100 rounded-pill py-3" @click="passo = 1">Voltar</button><button class="btn btn-dark w-100 rounded-pill py-3 fw-bold" @click="passo = 3" :disabled="!form.nomeFantasia">Próximo</button></div>
         </div>
 
-        <div v-if="passo === 3">
-          <label class="label-v">Descrição Curta</label>
-          <textarea v-model="form.descricao" class="form-control mb-3" placeholder="O que sua empresa faz?"></textarea>
-          <label class="label-v">Locais de Atendimento</label>
-          <input type="text" v-model="form.locaisAtendimento" class="form-control mb-3" placeholder="Cidades ou Estados">
-          <div class="alert alert-light border small text-muted mb-4">Análise prévia para publicação.</div>
-          <div class="d-flex gap-2"><button class="btn btn-outline-secondary w-100 rounded-pill py-3" @click="passo = 2">Voltar</button><button class="btn btn-success w-100 rounded-pill py-3 fw-bold" @click="enviarFormulario" :disabled="submitting">{{ submitting ? 'Enviando...' : 'Finalizar' }}</button></div>
+        <!-- PASSO 3 -->
+        <div v-if="passo === 3" class="text-start">
+          <label class="label-v">Descrição do Negócio / Serviços</label>
+          <textarea v-model="form.descricao" class="form-control mb-3 shadow-none"></textarea>
+          <label class="label-v">Diferencial para Irmãos (Opcional)</label>
+          <input type="text" v-model="form.diferencial" class="form-control mb-3 shadow-none" placeholder="Ex: 10% de desconto">
+          <label class="label-v">Cidades ou Estados que Atende</label>
+          <input type="text" v-model="form.locaisAtendimento" class="form-control mb-3 shadow-none" placeholder="Ex: Aracaju, Sergipe, Brasil">
+          <div class="alert alert-light border small text-muted mb-4"><i class="fa fa-info-circle me-1"></i>Análise prévia para publicação na revista.</div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary w-100 rounded-pill py-3" @click="passo = 2">Voltar</button>
+            <button class="btn btn-success w-100 rounded-pill py-3 fw-bold shadow-sm" @click="enviarFormulario" :disabled="submitting">
+              {{ submitting ? 'Enviando...' : 'Finalizar Cadastro' }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -222,9 +278,9 @@
   createApp({
     data() {
       return {
-        API_URL: 'https://script.google.com/macros/s/AKfycbxFRcaIk838QmPAAKdb3oHTc0hJdj48j02Mi_AWETDsKe-hPydWha_SrMjo17Pfwewr/exec',
+        API_URL: 'https://script.google.com/macros/s/AKfycbzFRcaIk838QmPAAKdb3oHTc0hJdj48j02Mi_AWETDsKe-hPydWha_SrMjo17Pfwewr/exec',
         tela: 'grid', passo: 1, cadastroSucesso: false, submitting: false, detalhe: null, categorias: [],
-        form: { nomeIrmao: '', grau: 'Aprendiz', vinculo: 'Proprio', nomeProprietaria: '', nomeFantasia: '', categorias: '', whatsapp: '', descricao: '', locaisAtendimento: '', fileData: '', modalidade: 'Presencial', email: 'contato@catalogo.com' },
+        form: { nomeIrmao: '', grau: 'Aprendiz', vinculo: 'Proprio', nomeProprietaria: '', nomeFantasia: '', categorias: '', whatsapp: '', descricao: '', locaisAtendimento: '', fileData: '', diferencial: '', loja: '', slogan: '', site: '', instagram: '', modalidade: 'Presencial', email: 'contato@catalogo.com' },
         estado: { negocios: [], loading: true, busca: '', categoriaSelecionada: '', pagina: 1, itensPag: 12 }
       };
     },
@@ -250,20 +306,19 @@
       async carregarDados() {
         try {
           this.estado.loading = true;
-          // CONEXÃO CORRIGIDA BASEADA NO SEU CÓDIGO FUNCIONAL
+          // CONEXÃO MODELO (ANTI-CORS)
           const response = await fetch(`${this.API_URL}?t=${Date.now()}`, {
             method: 'GET',
             mode: 'cors',
             redirect: 'follow',
             headers: { Accept: 'application/json' }
           });
-          if (!response.ok) throw new Error('Erro na rede');
+          if (!response.ok) throw new Error('Falha na rede');
           const res = await response.json();
-          // Aceita tanto Array direto quanto {data: []}
           this.estado.negocios = Array.isArray(res) ? res : (res.data || []);
           this.construirCategorias();
         } catch (err) {
-          console.error(err);
+          console.error("Erro API:", err);
         } finally { this.estado.loading = false; }
       },
       construirCategorias() {
@@ -277,24 +332,25 @@
       converterImagem(e) {
         const f = e.target.files[0];
         const r = new FileReader();
-        reader.onload = ev => { this.form.fileData = ev.target.result; };
-        if(f) reader.readAsDataURL(f);
+        r.onload = ev => { this.form.fileData = ev.target.result; };
+        if(f) r.readAsDataURL(f);
       },
       async enviarFormulario() {
         this.submitting = true;
         try {
-          await fetch(this.API_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(this.form)
+          // POST via no-cors para evitar bloqueios do Google
+          await fetch(this.API_URL, { 
+            method: 'POST', 
+            mode: 'no-cors', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify(this.form) 
           });
           this.cadastroSucesso = true;
-        } catch (err) {
-          alert("Erro no envio.");
+        } catch (e) {
+          alert("Ocorreu um erro no envio. Verifique sua conexão.");
         } finally { this.submitting = false; }
       },
-      getWpp(t) { if(!t) return "#"; let n = t.replace(/\D/g, ""); return `https://wa.me/55${n}`; },
+      getWpp(t) { if(!t) return "#"; let n = t.replace(/\D/g, ""); return `https://wa.me/55${n}?text=Olá! Vi seu anúncio no Catálogo Maçonaria SE.`; },
       getInsta(u) { if(!u) return "#"; let i = u.replace("@","").trim(); return i.includes("http") ? i : `https://instagram.com/${i}`; }
     },
     mounted() { this.carregarDados(); }
